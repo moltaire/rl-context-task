@@ -31,44 +31,84 @@ if __name__ == "__main__":
     )
     experiment_label = "rl-context-task"  # Label of the experiment, used in logfiles
 
-    # Messages
-    end_screen_message = "Ciao Kakao."
-
-    # Temporal arrangement: Randomize trial order within a block? "blocked" or "interleaved"? (See Bavard et al., 2021, Fig 1)
+    # General experiment flow and settings
+    ## Temporal arrangement: Randomize trial order within a block? "blocked" or "interleaved"? (See Bavard et al., 2021, Fig 1)
     temporal_arrangement = "blocked"  # blocked, interleaved; Gueguen used blocked
 
-    # Training settings
+    ## Training settings
     training_n_repeats_max = 2  # Maximum number of training repetitions
 
-    # Show block dividers
+    ## Show block dividers
     show_block_dividers = False
 
-    # Show score between rounds
+    ## Show score between rounds
     show_score_after_phase = True
+
+    # Trials / Conditions
+    ## Trial information will be loaded from a separate .csv file
+    conditions = pd.read_csv(os.path.join("stim", "conditions.csv"))
+
+    ## Get the number of symbols needed
+    ## After a random number generator seed has been set, there will be a
+    ## participant-specific mapping of symbols (e.g., 1.png) to IDs (e.g., A)
+    n_symbols_training = np.unique(
+        conditions.query("phase == 'training'")[["symbol1", "symbol2"]].values.ravel()
+    ).size
+    n_symbols_task = np.unique(
+        conditions.query("phase == 'learning'")[["symbol1", "symbol2"]].values.ravel()
+    ).size
+    print(
+        f"Assuming {n_symbols_training} training symbols and {n_symbols_task} task symbols."
+    )
+
+    # Buttons
+    ## Responses
+    button_left = "f"
+    button_right = "j"
+
+    ## Quit button (don't tell participants)
+    button_quit = "q"
+
+    ## Instruction buttons (to move around in instructions)
+    button_instr_next = "right"  # move to next slide
+    button_instr_previous = "left"  # move to previous slide
+    button_instr_finish = "space"  # continues after
+    button_instr_skip = "s"  # moves to last slide
+    button_instr_repeat = "r"  # to repeat training (and instructions)
+    button_instr_quit = button_quit  # quit experiment
 
     # Timing
     duration_timeout = float(
         "inf"
-    )  # timeout duration, None = self paced, used by Bavard & Gueguen
+    )  # timeout duration, float("inf") = self paced, used by Bavard & Gueguen
     duration_choice = 0.5  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
-    duration_outcome = 1.0  # time for the outcome to be shown
-    duration_iti = 0.2
+    duration_outcome = 1.0  # time for the outcome to be shown (seconds)
+    duration_iti = 0.2  # inter trial interval (seconds)
 
     # Visual stim settings
+    ## General background and text
+    background_color = "lightgray"
+    text_color = "black"
+    text_height = 0.05  # in fraction of display height
+
+    ## Stimulus positions (left right, units in screen height)
+    pos_left = -0.25
+    pos_right = +0.25
+
+    ## Symbol size (units screen height)
+    symbol_width = 0.24
+    symbol_height = 0.24
+
+    ## Outcome text
+    outcome_color = "forestgreen"
+    outcome_color_counterfactual = "gray"
+
+    ## Background rectangle
     rect_linewidth = 3
     rect_width = 0.25
     rect_height = 0.25
-    pos_left = -0.25
-    pos_right = +0.25
-    text_height = 0.05  # in fraction of display height
-    background_color = "lightgray"
-    text_color = "black"
-    outcome_color = "forestgreen"
-    outcome_color_counterfactual = "gray"
     rect_linecolor = "black"
     rect_background_color = "white"
-    symbol_width = 0.24
-    symbol_height = 0.24
 
     ## Feedback rectangle
     fb_rect_linewidth = 6
@@ -84,23 +124,6 @@ if __name__ == "__main__":
     if not os.path.exists(logfile_folder):
         os.makedirs(logfile_folder)
 
-    # Trials / Conditions
-    ## Trial information will be loaded from a separate .csv file
-    conditions = pd.read_csv(os.path.join("stim", "conditions.csv"))
-
-    # Responses
-    button_quit = "escape"
-    button_left = "f"
-    button_right = "j"
-
-    # Instruction buttons
-    button_instr_next = "right"
-    button_instr_previous = "left"
-    button_instr_finish = "space"
-    button_instr_skip = "s"
-    button_instr_repeat = "r"  # to repeat training (and instructions)
-    button_instr_quit = button_quit
-
     # PLACEHOLDER FOR SERIAL PORT SETUP # # # # # #
     serial_port = None  # e.g., None if not in use
     # TODO: Include this. # # # # # # # # # # # # #
@@ -112,7 +135,6 @@ if __name__ == "__main__":
     ## Experiment setting GUI ##
     ############################
     # Try to read experiment settings from a previous run
-    # this does not work on Windows atm
     try:
         exp_info = fromFile("lastRunSettings.pickle")
     # If there is none, then we use a default parameter set
@@ -141,8 +163,6 @@ if __name__ == "__main__":
         core.quit()
 
     # Make random mapping of symbol IDs (ABCDEFGH and training ones) to images (1,2,3,4,5.png)
-    n_symbols_training = 4  # ideally read this from the conditions
-    n_symbols_task = 8  # ideally read this from the conditions
     symbol_ids = ascii_uppercase[:n_symbols_task]
     image_names = [f"{i + 1}.png" for i in range(n_symbols_task + n_symbols_training)]
     np.random.shuffle(image_names)  # shuffle in place
@@ -163,7 +183,6 @@ if __name__ == "__main__":
     exp_info["logfile_path"] = logfile_path
 
     # Save all experiment settings
-    exp_info["end_screen_message"] = end_screen_message
     exp_info["duration_timeout"] = duration_timeout
     exp_info["duration_choice"] = duration_choice
     exp_info["duration_outcome"] = duration_outcome
@@ -602,10 +621,11 @@ if __name__ == "__main__":
     # ------------------------------ #
     # End of experiment / Debriefing #
     # ------------------------------ #
+    end_screen_message = "Ciao Kakao."
     end_screen = visual.TextStim(
         win,
         end_screen_message
-        + f"\n\n'{exp_info['buttons']['button_quit'].capitalize()}' to quit.",
+        + f"\n\n'{exp_info['buttons']['button_quit'].capitalize()}' um das Experiment zu beenden.",
         height=exp_info["text_height"],
         color=exp_info["text_color"],
     )
