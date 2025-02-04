@@ -40,9 +40,6 @@ if __name__ == "__main__":
     # Training settings
     training_n_repeats_max = 2  # Maximum number of training repetitions
 
-    ## Stimulus size and position
-    text_height = 0.05  # in fraction of display height
-
     # Timing
     duration_timeout = float(
         "inf"
@@ -57,7 +54,9 @@ if __name__ == "__main__":
     rect_height = 0.2
     pos_left = -0.25
     pos_right = +0.25
-    outcome_color = "limegreen"
+    text_height = 0.05  # in fraction of display height
+    text_color = "white"
+    outcome_color = "chartreuse"
 
     # Screen
     screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
@@ -83,8 +82,8 @@ if __name__ == "__main__":
     button_instr_previous = "left"
     button_instr_finish = "space"
     button_instr_skip = "s"
-    button_instr_quit = button_quit
     button_instr_repeat = "r"  # to repeat training (and instructions)
+    button_instr_quit = button_quit
 
     # PLACEHOLDER FOR SERIAL PORT SETUP # # # # # #
     serial_port = None  # e.g., None if not in use
@@ -154,6 +153,7 @@ if __name__ == "__main__":
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
     exp_info["temporal_arrangement"] = temporal_arrangement
+    exp_info["text_color"] = text_color
     exp_info["outcome_color"] = outcome_color
     exp_info["text_height"] = text_height
     exp_info["rect_linewidth"] = rect_linewidth
@@ -199,12 +199,13 @@ if __name__ == "__main__":
     win.mouseVisible = False
 
     # Set up stimuli
-    # Stimulus Images
+    ## Stimulus Images
+    ## Image files are just placeholder, will be replaced in `trial.prepare()`
     image_left = visual.ImageStim(
-        win, image=join("stim", "images", "t1.png"), pos=(pos_left, 0)
+        win, image=join("stim", "images", "1.png"), pos=(pos_left, 0)
     )
     image_right = visual.ImageStim(
-        win, image=join("stim", "images", "t2.png"), pos=(pos_right, 0)
+        win, image=join("stim", "images", "2.png"), pos=(pos_right, 0)
     )
     images = [image_left, image_right]
 
@@ -229,15 +230,42 @@ if __name__ == "__main__":
 
     # Outcomes
     outcome_left = visual.TextStim(
-        win, text="", pos=(pos_left, 0), height=text_height, color=outcome_color
+        win,
+        text="",
+        pos=(pos_left, 0),
+        height=text_height,
+        color=exp_info["outcome_color"],
     )
     outcome_right = visual.TextStim(
-        win, text="", pos=(pos_right, 0), height=text_height, color=outcome_color
+        win,
+        text="",
+        pos=(pos_right, 0),
+        height=text_height,
+        color=exp_info["outcome_color"],
     )
     outcomes = [outcome_left, outcome_right]
 
+    # Explicit phase TextStims
+    explicit_left = visual.TextStim(
+        win,
+        text="",
+        pos=(pos_left, 0),
+        height=text_height,
+        color=exp_info["text_color"],
+    )
+    explicit_right = visual.TextStim(
+        win,
+        text="",
+        pos=(pos_right, 0),
+        height=text_height,
+        color=exp_info["text_color"],
+    )
+    explicit = [explicit_left, explicit_right]
+
     # save all pre-made visual elements
-    visual_elements = dict(images=images, rects=rects, outcomes=outcomes)
+    visual_elements = dict(
+        images=images, rects=rects, outcomes=outcomes, explicit=explicit
+    )
     exp_info["visual_elements"] = visual_elements
 
     ####
@@ -408,7 +436,7 @@ if __name__ == "__main__":
     # -------------- #
 
     n_repeats = 0
-    repeat_training = True
+    repeat_training = False
     while repeat_training and n_repeats <= training_n_repeats_max:
         run_phase(
             phase="training",
@@ -457,41 +485,37 @@ if __name__ == "__main__":
     # -------------- #
     # Learning phase #
     # -------------- #
-    run_phase(
-        phase="learning",
-        conditions=conditions,
-        instruction_slides=instr_slides_learning,
-        exp_info=exp_info,
-        exp=exp,
-        win=win,
-    )
+    # run_phase(
+    #     phase="learning",
+    #     conditions=conditions,
+    #     instruction_slides=instr_slides_learning,
+    #     exp_info=exp_info,
+    #     exp=exp,
+    #     win=win,
+    # )
     # -------------- #
     # Transfer phase #
     # -------------- #
-    run_phase(
-        phase="transfer",
-        conditions=conditions,
-        instruction_slides=instr_slides_transfer,
-        exp_info=exp_info,
-        exp=exp,
-        win=win,
-    )
+    # run_phase(
+    #     phase="transfer",
+    #     conditions=conditions,
+    #     instruction_slides=instr_slides_transfer,
+    #     exp_info=exp_info,
+    #     exp=exp,
+    #     win=win,
+    # )
 
     # -------------- #
     # Explicit phase #
     # -------------- #
-    SlideShow(
+    run_phase(
+        phase="explicit",
+        conditions=conditions,
+        instruction_slides=instr_slides_explicit,
+        exp_info=exp_info,
+        exp=exp,
         win=win,
-        slides=instr_slides_explicit,
-        keys_next=[exp_info["buttons"]["button_instr_next"]],
-        keys_previous=[exp_info["buttons"]["button_instr_previous"]],
-        keys_skip=[exp_info["buttons"]["button_instr_skip"]],
-        keys_finish=[exp_info["buttons"]["button_instr_finish"]],
-        keys_quit=[exp_info["buttons"]["button_quit"]],
-    ).run()
-
-    ## Wait for keypress
-    event.waitKeys(keyList=[exp_info["buttons"]["button_instr_finish"]])
+    )
 
     # ------------------------------ #
     # End of experiment / Debriefing #

@@ -6,13 +6,15 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Implement explicit phase
-- [ ] Ensure all data is recorded (ideally, just include all condition data)
-- [ ] Test random icon mapping with full logfile
 - [ ] Make trials look nicer
+- [ ] Ensure all data are recorded
+- [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] Keep track of rewards over trials (for each phase)
 - [ ] End screen message can be SlideShow, too
+- [x] Implement explicit phase
+- [x] Record all data (ideally, just include all condition data)
+- [x] Is feedback an option in the explicit phase?
 - [x] Refactor code to reduce duplication across phases
 - [x] Prepare serial port triggers (via `exp_info`?)
 - [x] Implement ITI
