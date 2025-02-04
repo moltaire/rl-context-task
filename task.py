@@ -206,20 +206,25 @@ if __name__ == "__main__":
 
     # Display instructions
     ## Load instruction images
+    n_slides = 3
     learning_instr_slides = [
         TextSlide(
             win=win,
             text=(
                 f"Instructions: Learning Phase\n"
-                + f"Slide {i}/3 text.\n\n"
+                + f"Slide {i + 1}/{n_slides} text.\n\n"
                 + f"({button_instr_previous.capitalize()}) Previous - "
                 + f"({button_instr_next.capitalize()}) Next - "
                 + f"({button_instr_skip.capitalize()}) Skip - "
-                + f"({button_instr_finish.capitalize()}) Continue with task"
+                + (
+                    f"({button_instr_finish.capitalize()}) Continue with task"
+                    if i == (n_slides - 1)
+                    else ""
+                )
             ),
             height=text_height,
         )
-        for i in [1, 2, 3]
+        for i in range(n_slides)
     ]
 
     ## Run instruction slideshow
