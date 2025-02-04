@@ -6,13 +6,15 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Implement temporal arrangement (`temporal_arrangement`; blocked vs. interleaved)
 - [ ] Implement random assignment of icons to choice options
-- [ ] Implement explicit phase 
+- [ ] Implement explicit phase
 - [ ] Ensure all data is recorded (ideally, just include all condition data)
 - [ ] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
 - [ ] Prepare serial port triggers (via `exp_info`?)
 - [ ] Make trials look nicer
+- [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
+- [ ] Refactor code to reduce duplication across phases
+- [x] Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")
 - [x] Fix instruction slideshow
 - [x] Implement left/right shuffle (currently called `stim1pos`)
 

@@ -32,8 +32,8 @@ if __name__ == "__main__":
     # Messages
     end_screen_message = "Ciao Kakao."
 
-    # Temporal arrangement: Context sequence blocked or interleaved? (See Bavard et al., 2021, Fig 1)
-    context_arrangement = "blocked"  # blocked, interleaved; Gueguen used blocked
+    # Temporal arrangement: Randomize trial order within a block? "blocked" or "interleaved"? (See Bavard et al., 2021, Fig 1)
+    temporal_arrangement = "blocked"  # blocked, interleaved; Gueguen used blocked
 
     ## Stimulus size and position
     text_height = 0.05  # in fraction of display height
@@ -124,7 +124,7 @@ if __name__ == "__main__":
     exp_info["choice_timeout"] = choice_timeout
     exp_info["choice_feedback"] = choice_feedback
     exp_info["outcome_duration"] = outcome_duration
-    exp_info["context_arrangement"] = context_arrangement
+    exp_info["temporal_arrangement"] = temporal_arrangement
     exp_info["outcome_color"] = outcome_color
     exp_info["text_height"] = text_height
     exp_info["rect_linewidth"] = rect_linewidth
@@ -207,11 +207,11 @@ if __name__ == "__main__":
     # Display instructions
     ## Load instruction images
     n_slides = 3
-    learning_instr_slides = [
+    training_instr_slides = [
         TextSlide(
             win=win,
             text=(
-                f"Instructions: Learning Phase\n"
+                f"Instructions: Training Phase\n"
                 + f"Slide {i + 1}/{n_slides} text.\n\n"
                 + f"({button_instr_previous.capitalize()}) Previous - "
                 + f"({button_instr_next.capitalize()}) Next - "
@@ -232,7 +232,7 @@ if __name__ == "__main__":
     start_button = "space"
     instruction = SlideShow(
         win=win,
-        slides=learning_instr_slides,
+        slides=training_instr_slides,
         keys_finish=[button_instr_finish],
         keys_previous=[button_instr_previous],
         keys_next=[button_instr_next],
@@ -241,12 +241,14 @@ if __name__ == "__main__":
     )
     response = instruction.run()
 
-    # Training
+    # -------------- #
+    # Training phase #
+    # -------------- #
     conditions_training = conditions.loc[conditions["phase"] == "training"]
     ## button to repeat training
     repeat_button = "r"
     ## button to proceed
-    start_button = "s"
+    start_button = "space"
 
     n_repeats_max = 2  # TODO: move this up
     n_repeats = 0
@@ -271,7 +273,7 @@ if __name__ == "__main__":
             slides=[
                 TextSlide(
                     win=win,
-                    text=f"Mit '{repeat_button}' Training wiederholen\n\noder\n\nMit '{start_button}' fortfahren.",
+                    text=f"Mit '{repeat_button.capitalize()}' Training wiederholen\n\noder\n\nMit '{start_button.capitalize()}' fortfahren.",
                     height=text_height,
                 ),
             ],
@@ -287,47 +289,181 @@ if __name__ == "__main__":
                     slides=[
                         TextSlide(
                             win=win,
-                            text=f"Sie haben bereits die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit '{start_button}' beginnen.",
+                            text=f"Sie haben bereits die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit '{start_button.capitalize()}' beginnen.",
                             height=text_height,
                         ),
                     ],
                     keys_finish=[start_button],
                 ).run()
 
-    # Learning phase
+    # -------------- #
+    # Learning phase #
+    # -------------- #
     conditions_learning = conditions.loc[conditions["phase"] == "learning"]
-    blocks = conditions_learning["block"].unique()
-    for block in blocks:
-        SlideShow(
-            win=win,
-            slides=[
-                TextSlide(
-                    win=win,
-                    text=f"Block {block} von {len(blocks)}\n\nMit '{start_button}' beginnen",
-                    height=text_height,
-                ),
-            ],
-            keys_finish=[start_button],
-        ).run()
-        trials_block = conditions_learning.loc[conditions_learning["block"] == block]
-        if randomize_trials:
-            trials_block = trials_block.sample(frac=1)
-        for idx, trial_info in trials_block.iterrows():
-            print(trial_info)
+    if len(conditions_learning) > 0:
 
-            trial = Trial(
-                trial_info=trial_info,
-                exp=exp,
-                exp_info=exp_info,
+        # Show learning phase instructions
+        n_slides = 3
+        learning_instr_slides = [
+            TextSlide(
                 win=win,
-                visual_elements=visual_elements,
+                text=(
+                    f"Instructions: Learning Phase\n"
+                    + f"Slide {i + 1}/{n_slides} text.\n\n"
+                    + f"({button_instr_previous.capitalize()}) Previous - "
+                    + f"({button_instr_next.capitalize()}) Next - "
+                    + f"({button_instr_skip.capitalize()}) Skip - "
+                    + (
+                        f"({button_instr_finish.capitalize()}) Continue with task"
+                        if i == (n_slides - 1)
+                        else ""
+                    )
+                ),
+                height=text_height,
             )
-            trial.prepare()
-            trial.run()
-            trial.log()
+            for i in range(n_slides)
+        ]
+
+        ## Run instruction slideshow
+        ## button to start task
+        start_button = "space"
+        instruction = SlideShow(
+            win=win,
+            slides=learning_instr_slides,
+            keys_finish=[button_instr_finish],
+            keys_previous=[button_instr_previous],
+            keys_next=[button_instr_next],
+            keys_quit=[button_quit],
+            keys_skip=[button_instr_skip],
+        )
+        response = instruction.run()
+
+        blocks = conditions_learning["block"].unique()
+        n_blocks = len(blocks)
+        for b, block in enumerate(blocks):
+            # Show a block divider if there are multiple blocks
+            if n_blocks > 1:
+                SlideShow(
+                    win=win,
+                    slides=[
+                        TextSlide(
+                            win=win,
+                            text=f"Block {b + 1} von {len(blocks)}\n\nMit '{start_button}' beginnen",
+                            height=text_height,
+                        ),
+                    ],
+                    keys_finish=[start_button],
+                ).run()
+
+            trials_block = conditions_learning.loc[
+                conditions_learning["block"] == block
+            ]
+            if temporal_arrangement == "interleaved":
+                trials_block = trials_block.sample(frac=1)
+            for idx, trial_info in trials_block.iterrows():
+                print(trial_info)
+
+                trial = Trial(
+                    trial_info=trial_info,
+                    exp=exp,
+                    exp_info=exp_info,
+                    win=win,
+                    visual_elements=visual_elements,
+                )
+                trial.prepare()
+                trial.run()
+                trial.log()
+
+    # -------------- #
+    # Transfer phase #
+    # -------------- #
+    conditions_transfer = conditions.loc[conditions["phase"] == "transfer"]
+    if len(conditions_transfer) > 0:
+
+        # Show transfer phase instructions
+        n_slides = 3
+        transfer_instr_slides = [
+            TextSlide(
+                win=win,
+                text=(
+                    f"Instructions: Transfer Phase\n"
+                    + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
+                    + f"({button_instr_previous.capitalize()}) Previous - "
+                    + f"({button_instr_next.capitalize()}) Next - "
+                    + f"({button_instr_skip.capitalize()}) Skip - "
+                    + (
+                        f"({button_instr_finish.capitalize()}) Continue with task"
+                        if i == (n_slides - 1)
+                        else ""
+                    )
+                ),
+                height=text_height,
+            )
+            for i in range(n_slides)
+        ]
+
+        ## Run instruction slideshow
+        ## button to start task
+        start_button = "space"
+        instruction = SlideShow(
+            win=win,
+            slides=transfer_instr_slides,
+            keys_finish=[button_instr_finish],
+            keys_previous=[button_instr_previous],
+            keys_next=[button_instr_next],
+            keys_quit=[button_quit],
+            keys_skip=[button_instr_skip],
+        )
+        response = instruction.run()
+
+        # Run transfer phase
+        blocks = conditions_transfer["block"].unique()
+        n_blocks = len(blocks)
+        for b, block in enumerate(blocks):
+            # Show a block divider if there are multiple blocks
+            if n_blocks > 1:
+                SlideShow(
+                    win=win,
+                    slides=[
+                        TextSlide(
+                            win=win,
+                            text=f"Block {b + 1} von {len(blocks)}\n\nMit '{start_button}' beginnen",
+                            height=text_height,
+                        ),
+                    ],
+                    keys_finish=[start_button],
+                ).run()
+
+            trials_block = conditions_transfer.loc[
+                conditions_transfer["block"] == block
+            ]
+            if temporal_arrangement == "interleaved":
+                trials_block = trials_block.sample(frac=1)
+            for idx, trial_info in trials_block.iterrows():
+                print(trial_info)
+
+                trial = Trial(
+                    trial_info=trial_info,
+                    exp=exp,
+                    exp_info=exp_info,
+                    win=win,
+                    visual_elements=visual_elements,
+                )
+                trial.prepare()
+                trial.run()
+                trial.log()
+
+    # -------------- #
+    # Explicit phase #
+    # -------------- #
+    print("Explicit phase")
 
     # Show end screen
-    end_screen = visual.TextStim(win, end_screen_message, height=text_height)
+    end_screen = visual.TextStim(
+        win,
+        end_screen_message + f"\n\n'{button_quit.capitalize()}' to quit.",
+        height=text_height,
+    )
     end_screen.draw()
     win.flip()
 
