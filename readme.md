@@ -6,12 +6,12 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Keep track of rewards over trials (for each phase)
 - [ ] Ensure all data are recorded
 - [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] End screen message can be SlideShow, too
 - [ ] Remove unnecessary "exp_info" in main script. only necessary within functions
+- [x] Keep track of rewards over trials (for each phase)
 - [x] ~~Check if image size is specified properly~~
 - [x] ~~Specify text color~~
 - [x] ~~Make trials look nicer: Include background and feedback rectangles~~

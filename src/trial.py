@@ -100,7 +100,6 @@ class Trial(object):
 
         ## decode first response
         if keyEvents is not None:
-            print(keyEvents)
             # participant pressed a button
             if keyEvents[0][0] in [self.exp_info["buttons"]["button_quit"]]:
                 print("User quit experiment.")
@@ -114,7 +113,7 @@ class Trial(object):
             elif key_pressed == self.exp_info["buttons"]["button_right"]:
                 response = "right"
             else:
-                print(key)
+                raise ValueError(f"An unexpected key was pressed: {key}")
 
             # decode into choice (1 or 2)
             if self.trial_info["symbol1pos"] == "left":
@@ -185,7 +184,6 @@ class Trial(object):
                 if self.trial_info["feedback"] == "complete":
                     [outcomeStim.draw() for outcomeStim in self.outcomeStims]
                 elif self.trial_info["feedback"] == "partial":
-                    print("partial feedback!!!")
                     self.outcomeStims[choice - 1].draw()  # draw chosen option outcome
                     if self.trial_info["phase"] != "explicit":
                         self.imageStims[
@@ -206,6 +204,18 @@ class Trial(object):
         else:  # timed out
             pass  # do nothing?
 
+        # compute reward
+        if choice == 1:
+            reward_t = self.trial_info["outcome1"]
+        elif choice == 2:
+            reward_t = self.trial_info["outcome2"]
+        else:
+            reward_t = 0
+        self.obtained_reward = reward_t
+        if self.trial_info["phase"] != "training":
+            self.exp_info["total_reward"] += reward_t
+            self.cumulative_reward = self.exp_info["total_reward"]
+
         # Show ITI
         self.win.flip()
         core.wait(self.exp_info["duration_iti"])
@@ -219,4 +229,6 @@ class Trial(object):
         self.exp.addData("response", self.response)
         self.exp.addData("choice", self.choice)
         self.exp.addData("rt", self.rt)
+        self.exp.addData("obtained_reward", self.obtained_reward)
+        self.exp.addData("cumulative_reward", self.exp_info["total_reward"])
         self.exp.nextEntry()

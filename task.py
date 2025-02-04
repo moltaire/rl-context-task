@@ -191,6 +191,7 @@ if __name__ == "__main__":
     exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
     exp_info["training_n_repeats_max"] = training_n_repeats_max
     exp_info["show_block_dividers"] = show_block_dividers
+    exp_info["total_reward"] = 0 # used to track reward
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
