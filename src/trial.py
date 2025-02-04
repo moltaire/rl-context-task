@@ -12,7 +12,8 @@ class Trial(object):
         self.exp = exp
         self.win = win
         self.exp_info = exp_info
-        self.rects = visual_elements["rects"]
+        self.bg_rects = visual_elements["bg_rects"]
+        self.fb_rects = visual_elements["fb_rects"]
         self.outcomeStims = visual_elements["outcomes"]
         self.imageStims = visual_elements["images"]
         self.explicitStims = visual_elements["explicit"]
@@ -68,12 +69,12 @@ class Trial(object):
     def run(self):
 
         # Stimulus phase
+        for rect in self.bg_rects:
+            rect.draw()
         if self.trial_info["phase"] != "explicit":
             for image in self.imageStims:
                 image.draw()
         else:  # explicit phase
-            for rect in self.rects:
-                rect.draw()
             for explicit in self.explicitStims:
                 explicit.draw()
 
@@ -147,6 +148,9 @@ class Trial(object):
         ## Show choice frame (if not timed out)
         if not timed_out:
 
+            # Draw background rectangles
+            for rect in self.bg_rects:
+                rect.draw()
             ### Draw both images
             if self.trial_info["phase"] != "explicit":
                 for image in self.imageStims:
@@ -154,21 +158,34 @@ class Trial(object):
             else:
                 for explicit in self.explicitStims:
                     explicit.draw()
-                for rect in self.rects:
-                    rect.draw()
 
             ### Draw rectangle of chosen option
-            self.rects[
+            self.fb_rects[
                 response == "right"
             ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
             self.win.flip()
             core.wait(self.exp_info["duration_choice"])
 
-            ## Show outcome(s) if not explicit phase
+            ## Show outcome(s) if feedback != "none"
             if not self.trial_info["feedback"] == "none":
+                # draw background rectangles
+                [bg_rect.draw() for bg_rect in self.bg_rects]
+
+                # draw feedback frame of chosen option
+                self.fb_rects[
+                    response == "right"
+                ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
+
+                # set colors of outcomes
+                self.outcomeStims[choice - 1].color = self.exp_info["outcome_color"]
+                self.outcomeStims[1 - (choice - 1)].color = self.exp_info[
+                    "outcome_color_counterfactual"
+                ]
+
                 if self.trial_info["feedback"] == "complete":
                     [outcomeStim.draw() for outcomeStim in self.outcomeStims]
                 elif self.trial_info["feedback"] == "partial":
+                    print("partial feedback!!!")
                     self.outcomeStims[choice - 1].draw()  # draw chosen option outcome
                     if self.trial_info["phase"] != "explicit":
                         self.imageStims[

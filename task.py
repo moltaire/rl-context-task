@@ -50,13 +50,21 @@ if __name__ == "__main__":
 
     # Visual stim settings
     rect_linewidth = 3
-    rect_width = 0.2
-    rect_height = 0.2
+    rect_width = 0.25
+    rect_height = 0.25
     pos_left = -0.25
     pos_right = +0.25
     text_height = 0.05  # in fraction of display height
-    text_color = "white"
-    outcome_color = "chartreuse"
+    background_color = "lightgray"
+    text_color = "black"
+    outcome_color = "forestgreen"
+    outcome_color_counterfactual = "gray"
+    rect_linecolor = "black"
+    rect_background_color = "white"
+
+    ## feedback rectangle
+    fb_rect_linewidth = 6
+    fb_rect_linecolor = "black"
 
     # Screen
     screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
@@ -153,8 +161,10 @@ if __name__ == "__main__":
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
     exp_info["temporal_arrangement"] = temporal_arrangement
+    exp_info["background_color"] = background_color
     exp_info["text_color"] = text_color
     exp_info["outcome_color"] = outcome_color
+    exp_info["outcome_color_counterfactual"] = outcome_color_counterfactual
     exp_info["text_height"] = text_height
     exp_info["rect_linewidth"] = rect_linewidth
     exp_info["rect_width"] = rect_width
@@ -194,7 +204,11 @@ if __name__ == "__main__":
 
     # Set up the experiment window
     win = visual.Window(
-        size=screen_size, monitor=monitor, fullscr=fullscreen, units="height"
+        size=screen_size,
+        monitor=monitor,
+        fullscr=fullscreen,
+        units="height",
+        color=exp_info["background_color"],
     )
     win.mouseVisible = False
 
@@ -209,24 +223,45 @@ if __name__ == "__main__":
     )
     images = [image_left, image_right]
 
-    ## Set up feedback rectangles
-    rect_left = visual.Rect(
+    ## Set up background rectangles
+    bg_rect_left = visual.Rect(
         win,
         pos=[pos_left, 0],
         size=[rect_width, rect_height],
         lineWidth=rect_linewidth,
-        lineColor="black",
+        lineColor=rect_linecolor,
+        fillColor=rect_background_color,
         units="height",
     )
-    rect_right = visual.Rect(
+    bg_rect_right = visual.Rect(
         win,
         pos=[pos_right, 0],
         size=[rect_width, rect_height],
         lineWidth=rect_linewidth,
-        lineColor="black",
+        lineColor=rect_linecolor,
+        fillColor=rect_background_color,
         units="height",
     )
-    rects = [rect_left, rect_right]
+    bg_rects = [bg_rect_left, bg_rect_right]
+
+    ## Set up feedback rectangles
+    fb_rect_left = visual.Rect(
+        win,
+        pos=[pos_left, 0],
+        size=[rect_width, rect_height],
+        lineWidth=fb_rect_linewidth,
+        lineColor=fb_rect_linecolor,
+        units="height",
+    )
+    fb_rect_right = visual.Rect(
+        win,
+        pos=[pos_right, 0],
+        size=[rect_width, rect_height],
+        lineWidth=fb_rect_linewidth,
+        lineColor=fb_rect_linecolor,
+        units="height",
+    )
+    fb_rects = [fb_rect_left, fb_rect_right]
 
     # Outcomes
     outcome_left = visual.TextStim(
@@ -264,7 +299,11 @@ if __name__ == "__main__":
 
     # save all pre-made visual elements
     visual_elements = dict(
-        images=images, rects=rects, outcomes=outcomes, explicit=explicit
+        images=images,
+        bg_rects=bg_rects,
+        outcomes=outcomes,
+        explicit=explicit,
+        fb_rects=fb_rects,
     )
     exp_info["visual_elements"] = visual_elements
 
@@ -436,7 +475,7 @@ if __name__ == "__main__":
     # -------------- #
 
     n_repeats = 0
-    repeat_training = False
+    repeat_training = True
     while repeat_training and n_repeats <= training_n_repeats_max:
         run_phase(
             phase="training",
@@ -485,14 +524,15 @@ if __name__ == "__main__":
     # -------------- #
     # Learning phase #
     # -------------- #
-    # run_phase(
-    #     phase="learning",
-    #     conditions=conditions,
-    #     instruction_slides=instr_slides_learning,
-    #     exp_info=exp_info,
-    #     exp=exp,
-    #     win=win,
-    # )
+    run_phase(
+        phase="learning",
+        conditions=conditions,
+        instruction_slides=instr_slides_learning,
+        exp_info=exp_info,
+        exp=exp,
+        win=win,
+    )
+
     # -------------- #
     # Transfer phase #
     # -------------- #

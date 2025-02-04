@@ -6,23 +6,26 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Make trials look nicer
+- [ ] Specify text color
 - [ ] Ensure all data are recorded
+- [ ] Check if image size is specified properly
 - [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] Keep track of rewards over trials (for each phase)
 - [ ] End screen message can be SlideShow, too
-- [x] Implement explicit phase
-- [x] Record all data (ideally, just include all condition data)
-- [x] Is feedback an option in the explicit phase?
-- [x] Refactor code to reduce duplication across phases
-- [x] Prepare serial port triggers (via `exp_info`?)
-- [x] Implement ITI
-- [x] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
-- [x] Implement random assignment of icons to choice options
-- [x] Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")
-- [x] Fix instruction slideshow
-- [x] Implement left/right shuffle (currently called `stim1pos`)
+- [x] ~~Make trials look nicer: Include background and feedback rectangles~~
+- [x] ~~Make counterfactual outcome have different color~~
+- [x] ~~Implement explicit phase~~
+- [x] ~~Record all data (ideally, just include all condition data)~~
+- [x] ~~Is feedback an option in the explicit phase?~~
+- [x] ~~Refactor code to reduce duplication across phases~~
+- [x] ~~Prepare serial port triggers (via `exp_info`?)~~
+- [x] ~~Implement ITI~~
+- [x] ~~Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)~~
+- [x] ~~Implement random assignment of icons to choice options~~
+- [x] ~~Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")~~
+- [x] ~~Fix instruction slideshow~~
+- [x] ~~Implement left/right shuffle (currently called `stim1pos`)~~
 
 ## Details
 
