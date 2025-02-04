@@ -451,7 +451,7 @@ if __name__ == "__main__":
             blocks = conditions_phase["block"].unique()
             n_blocks = len(blocks)
             for b, block in enumerate(blocks):
-                if exp_info["show_block_divider"]:
+                if exp_info["show_block_dividers"]:
                     # Show a block divider if there are multiple blocks
                     if n_blocks > 1:
                         SlideShow(
