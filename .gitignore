@@ -1,2 +1,17 @@
-private/
+# Compiled python files
 *.pyc
+
+# Pickled python files
+*.pickle
+
+# Keynote files used for instruction templates
+*.key
+
+# MacOS indexing files
+.DS_Store
+
+# Data folder
+data/
+
+# Private folder
+private/
