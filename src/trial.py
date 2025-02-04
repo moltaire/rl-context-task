@@ -24,13 +24,18 @@ class Trial(object):
         """
         if self.trial_info["phase"] != "explicit":
             # Set up images and outcomes
-            for imageStim, symbol in zip(
-                self.imageStims,
-                (self.trial_info["symbol1"], self.trial_info["symbol2"]),
-            ):
-                imageStim.setImage(
-                    join("stim", "images", self.exp_info["stimulus_map"][symbol])
+            for i, (imageStim, symbol) in enumerate(
+                zip(
+                    self.imageStims,
+                    (self.trial_info["symbol1"], self.trial_info["symbol2"]),
                 )
+            ):
+                imagePath = join(
+                    "stim", "images", self.exp_info["stimulus_map"][symbol]
+                )
+                # save images that were shown
+                imageStim.setImage(imagePath)
+                self.trial_info[f"image{i+1}"] = imagePath
 
             # Set up outcomes
             for outcomeStim, outcome in zip(
@@ -48,6 +53,9 @@ class Trial(object):
                 explicitStim.setText(
                     f"{(probability * 100):.0f}%\n\n{outcome:.0f} Pkt."
                 )
+                # log that no images were shown
+                self.trial_info["image1"] = np.nan
+                self.trial_info["image2"] = np.nan
 
         # Set positions
         if self.trial_info["symbol1pos"] == "left":
