@@ -1,13 +1,10 @@
-<img src="stim/images/10.png" alt="Reinforcement" width="20%" height="auto">
-<img src="stim/images/9.png" alt="Learning" width="20%" height="auto">
-<img src="stim/images/1.png" alt="Is" width="20%" height="auto">
-<img src="stim/images/4.png" alt="Fun" width="20%" height="auto">
+<img src="stim/images/10.png" alt="Reinforcement" width="20%" height="auto"><img src="stim/images/9.png" alt="Learning" width="20%" height="auto"><img src="stim/images/1.png" alt="Is" width="20%" height="auto"><img src="stim/images/4.png" alt="Fun" width="20%" height="auto">
 
-# Context-dependent reinforcement-learning task
+# Context-Dependent Reinforcement-Learning task
 
 The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and described in Bavard et al. (2021; Exp. 7).
 
-## Todos
+## Todo
 
 - [ ] Implement left/right shuffle (currently called `stim1pos`)
 - [ ] Implement random assignment of icons to choice options
