@@ -6,8 +6,6 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
-- [ ] Implement ITI
 - [ ] Implement explicit phase
 - [ ] Ensure all data is recorded (ideally, just include all condition data)
 - [ ] Test random icon mapping with full logfile
@@ -17,6 +15,8 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 - [ ] Refactor code to reduce duplication across phases
 - [ ] Keep track of rewards over trials (for each phase)
 - [ ] End screen message can be SlideShow, too
+- [x] Implement ITI
+- [x] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
 - [x] Implement random assignment of icons to choice options
 - [x] Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")
 - [x] Fix instruction slideshow

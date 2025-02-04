@@ -40,11 +40,12 @@ if __name__ == "__main__":
     text_height = 0.05  # in fraction of display height
 
     # Timing
-    choice_timeout = float(
+    duration_timeout = float(
         "inf"
     )  # timeout duration, None = self paced, used by Bavard & Gueguen
-    choice_feedback = 500  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
-    outcome_duration = 1000  # time for the outcome to be shown
+    duration_choice = 0.5  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
+    duration_outcome = 1.0  # time for the outcome to be shown
+    duration_iti = 0.2
 
     # Visual stim settings
     rect_linewidth = 3
@@ -139,9 +140,10 @@ if __name__ == "__main__":
 
     # Save all experiment settings
     exp_info["end_screen_message"] = end_screen_message
-    exp_info["choice_timeout"] = choice_timeout
-    exp_info["choice_feedback"] = choice_feedback
-    exp_info["outcome_duration"] = outcome_duration
+    exp_info["duration_timeout"] = duration_timeout
+    exp_info["duration_choice"] = duration_choice
+    exp_info["duration_outcome"] = duration_outcome
+    exp_info["duration_iti"] = duration_iti
     exp_info["temporal_arrangement"] = temporal_arrangement
     exp_info["outcome_color"] = outcome_color
     exp_info["text_height"] = text_height

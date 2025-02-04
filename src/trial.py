@@ -74,7 +74,7 @@ class Trial(object):
                 self.exp_info["buttons"]["button_right"],
                 self.exp_info["buttons"]["button_quit"],
             ],
-            maxWait=self.exp_info["choice_timeout"],
+            maxWait=self.exp_info["duration_timeout"],
             timeStamped=rt_start,
         )
 
@@ -137,7 +137,7 @@ class Trial(object):
                 response == "right"
             ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
             self.win.flip()
-            core.wait(0.5)  # TODO: move to exp_info
+            core.wait(self.exp_info["duration_choice"])  # TODO: move to exp_info
 
             ## Show outcome(s)
             if not self.feedback == "none":
@@ -151,9 +151,13 @@ class Trial(object):
                         f"`feedback` must be one of ['complete', 'partial', 'none'], but is '{self.feedback}'."
                     )
                 self.win.flip()
-                core.wait(1)  # TODO: move to exp_info
+                core.wait(self.exp_info["duration_outcome"])  # TODO: move to exp_info
         else:  # timed out
             pass  # do nothing?
+
+        # Show ITI
+        self.win.flip()
+        core.wait(self.exp_info["duration_iti"])
 
     def log(self):
         ## Log information
