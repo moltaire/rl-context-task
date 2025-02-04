@@ -611,43 +611,43 @@ if __name__ == "__main__":
             exp=exp,
             win=win,
         )
-
-        # Show training repetition dialogue
-        response = SlideShow(
-            win=win,
-            slides=[
-                TextSlide(
-                    win=win,
-                    text=f"Mit '{button_instr_repeat.capitalize()}' Training wiederholen\n\n"
-                    + f"oder\n\nmit '{button_instr_finish.capitalize()}' fortfahren.",
-                    height=text_height,
-                    color=text_color,
-                ),
-            ],
-            keys_finish=[
-                button_instr_finish,
-                button_instr_repeat,
-            ],
-        ).run()
-
-        if not button_instr_repeat in response:
+        # check if maximum repeats is reached
+        if n_repeats == training_n_repeats_max:
+            response = SlideShow(
+                win=win,
+                slides=[
+                    TextSlide(
+                        win=win,
+                        text=f"Sie haben die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit "
+                        + f"'{button_instr_finish.capitalize()}' fortfahren.",
+                        height=text_height,
+                        color=text_color,
+                    ),
+                ],
+                keys_finish=[button_instr_finish],
+            ).run()
             repeat_training = False
-        else:
-            n_repeats += 1
-            if n_repeats > training_n_repeats_max:
-                response = SlideShow(
-                    win=win,
-                    slides=[
-                        TextSlide(
-                            win=win,
-                            text=f"Sie haben bereits die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit "
-                            + f"'{button_instr_finish.capitalize()}' beginnen.",
-                            height=text_height,
-                            color=text_color,
-                        ),
-                    ],
-                    keys_finish=[button_instr_finish],
-                ).run()
+        else:  # otherwise show training repetition dialogue
+            response = SlideShow(
+                win=win,
+                slides=[
+                    TextSlide(
+                        win=win,
+                        text=f"Mit '{button_instr_repeat.capitalize()}' Training wiederholen\n\n"
+                        + f"oder\n\nmit '{button_instr_finish.capitalize()}' fortfahren.",
+                        height=text_height,
+                        color=text_color,
+                    ),
+                ],
+                keys_finish=[
+                    button_instr_finish,
+                    button_instr_repeat,
+                ],
+            ).run()
+            if not button_instr_repeat in response:
+                repeat_training = False
+            else:
+                n_repeats += 1
 
     # -------------- #
     # Learning phase #
