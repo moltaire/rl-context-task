@@ -58,20 +58,20 @@ class Trial(object):
                 self.trial_info["image2"] = np.nan
 
         # Set positions
-        if self.trial_info["symbol1pos"] == "left":
+        if self.trial_info["option1pos"] == "left":
             self.imageStims[0].setPos((self.exp_info["pos_left"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[0]
-        elif self.trial_info["symbol1pos"] == "right":
+        elif self.trial_info["option1pos"] == "right":
             self.imageStims[0].setPos((self.exp_info["pos_right"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_left"], 0))
         else:
             raise ValueError(
-                f"`symbol1pos` must be 'left' or 'right' (is '{self.trial_info['symbol1pos']}')."
+                f"`option1pos` must be 'left' or 'right' (is '{self.trial_info['option1pos']}')."
             )
 
     def run(self):
@@ -124,14 +124,14 @@ class Trial(object):
                 raise ValueError(f"An unexpected key was pressed: {key}")
 
             # decode into choice (1 or 2)
-            if self.trial_info["symbol1pos"] == "left":
+            if self.trial_info["option1pos"] == "left":
                 if response == "left":
                     choice = 1
                 elif response == "right":
                     choice = 2
                 else:
                     raise ValueError(response)
-            elif self.trial_info["symbol1pos"] == "right":
+            elif self.trial_info["option1pos"] == "right":
                 if response == "left":
                     choice = 2
                 elif response == "right":
@@ -140,7 +140,7 @@ class Trial(object):
                     raise ValueError(response)
             else:
                 raise ValueError(
-                    f"`symbol1pos` must be 'left' or 'right' (is '{self.trial_info['symbol1pos']}')."
+                    f"`option1pos` must be 'left' or 'right' (is '{self.trial_info['option1pos']}')."
                 )
         else:
             # no button was pressed
