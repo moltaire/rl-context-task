@@ -57,6 +57,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Test random icon mapping with full logfile
 - [ ] Double triple check data, responses, etc.
 - [ ] Include serial port triggers
+- [ ] Write script to create `conditions.csv` mirroring literature
 - [x] ~~Double check temporal arrangement options. I think there should also be randomization if this is "blocked".~~
 - [x] ~~fix bug with random seed. currently, changing it in the GUI doesnt do anything~~
 - [x] ~~Fix ImageSlide instructions~~
