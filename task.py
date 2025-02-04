@@ -103,6 +103,7 @@ if __name__ == "__main__":
     duration_choice = 0.5  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
     duration_outcome = 1.0  # time for the outcome to be shown (seconds)
     duration_iti = 0.2  # inter trial interval (seconds)
+    duration_first_trial_blank = 1  # a blank screen after instructions, before the first trial of each block phase
 
     # Visual stim settings
     ## General background and text
@@ -332,6 +333,7 @@ if __name__ == "__main__":
     exp_info["duration_choice"] = duration_choice
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
+    exp_info["duration_first_trial_blank"] = duration_first_trial_blank
 
     ## Visuals
     exp_info["background_color"] = background_color
@@ -554,6 +556,11 @@ if __name__ == "__main__":
                 if exp_info["temporal_arrangement"] == "interleaved":
                     trials_block = trials_block.sample(frac=1)
 
+                # Blank screen before first trial of each block
+                win.flip()
+                core.wait(exp_info["duration_first_trial_blank"])
+
+                # Iterate through trials of this block
                 for idx, trial_info in trials_block.iterrows():
                     print(trial_info)
                     trial = Trial(
