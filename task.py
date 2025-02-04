@@ -40,6 +40,9 @@ if __name__ == "__main__":
     # Training settings
     training_n_repeats_max = 2  # Maximum number of training repetitions
 
+    # Show block dividers
+    show_block_dividers = False
+
     # Timing
     duration_timeout = float(
         "inf"
@@ -64,7 +67,7 @@ if __name__ == "__main__":
     symbol_width = 0.24
     symbol_height = 0.24
 
-    ## feedback rectangle
+    ## Feedback rectangle
     fb_rect_linewidth = 6
     fb_rect_linecolor = "black"
 
@@ -187,6 +190,7 @@ if __name__ == "__main__":
     exp_info["stimuli"] = dict(conditions=conditions.to_dict())
     exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
     exp_info["training_n_repeats_max"] = training_n_repeats_max
+    exp_info["show_block_dividers"] = show_block_dividers
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
@@ -447,20 +451,21 @@ if __name__ == "__main__":
             blocks = conditions_phase["block"].unique()
             n_blocks = len(blocks)
             for b, block in enumerate(blocks):
-                # Show a block divider if there are multiple blocks
-                if n_blocks > 1:
-                    SlideShow(
-                        win=win,
-                        slides=[
-                            TextSlide(
-                                win=win,
-                                text=f"Block {b + 1} von {len(blocks)}\n\nMit '{exp_info['buttons']['button_instr_finish'].capitalize()}' beginnen",
-                                height=exp_info["text_height"],
-                                color=exp_info["text_color"],
-                            ),
-                        ],
-                        keys_finish=[exp_info["buttons"]["button_instr_finish"]],
-                    ).run()
+                if exp_info["show_block_divider"]:
+                    # Show a block divider if there are multiple blocks
+                    if n_blocks > 1:
+                        SlideShow(
+                            win=win,
+                            slides=[
+                                TextSlide(
+                                    win=win,
+                                    text=f"Block {b + 1} von {len(blocks)}\n\nMit '{exp_info['buttons']['button_instr_finish'].capitalize()}' beginnen",
+                                    height=exp_info["text_height"],
+                                    color=exp_info["text_color"],
+                                ),
+                            ],
+                            keys_finish=[exp_info["buttons"]["button_instr_finish"]],
+                        ).run()
 
                 trials_block = conditions_phase.loc[conditions_phase["block"] == block]
                 if exp_info["temporal_arrangement"] == "interleaved":
