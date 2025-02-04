@@ -26,7 +26,8 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ### Conditions
 
-Conditions (i.e., trial information) is specified in a  `stim/conditions.csv`.
+Conditions (i.e., trial information) is specified in a  `stim/conditions.csv`.  
+Note that the task currently does not automatically create rewards and manage reward probabilities. All of this work and logic needs to be provided in the `conditions.csv` file for now. While this is a bit more tedious, it allows for a great level of control over what is shown. In the future, a script creating the `conditions.csv` file can be used to implement different task variants.
 
 ### Addtional Task Settings
 
