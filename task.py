@@ -227,29 +227,7 @@ if __name__ == "__main__":
     ]
 
     ## Learning phase
-    n_slides = 3
-    instr_slides_learning = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Learning Phase\n"
-                + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ### Image slides
+    ### Using image slides for illustration here
     instr_slides_learning = [
         ImageSlide(
             win=win,
