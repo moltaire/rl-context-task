@@ -6,7 +6,7 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [ ] Implement left/right shuffle (currently called `stim1pos`)
+- [x] Implement left/right shuffle (currently called `stim1pos`)
 - [ ] Implement random assignment of icons to choice options
 - [ ] Implement explicit phase 
 - [x] Fix instruction slideshow
