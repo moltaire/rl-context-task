@@ -8,8 +8,10 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ### Conditions
 
-Conditions (i.e., trial information) is specified in a  `stim/conditions.csv`.  
+Conditions (i.e., trial information) is specified in `stim/conditions.csv`.  
 Note that the task currently does not automatically create rewards and manage reward probabilities. All of this work and logic needs to be provided in the `conditions.csv` file for now. While this is a bit more tedious, it allows for a great level of control over what is shown. In the future, a script creating the `conditions.csv` file can be used to implement different task variants.
+
+#### Columns in `conditions.csv`
 
 The conditions-file should have the following columns:
 - `phase`: This specifies the task phase. Accepted values are:
@@ -17,8 +19,9 @@ The conditions-file should have the following columns:
   - `learning`: Trials in this phase count towards total points tally. They use `symbol` values `"A"`, `"B"`, etc.
   - `transfer`: Technically, can be identical to the `learning` phase, but will accept a different set of instructions, and, for example, different symbol pairings or `feedback` conditions (see below)
   - `explicit`: In this phase, no symbols are shown. Instead `probability` and `outcome` are shown explicitly for each option. 
-- `block`: This allows for splitting phases into blocks. Currently, if `temporal_arrangement` is set to `"interleaved"`, trials within each block are ordered randomly. Block values can re-start within every `phase`.
+- `block`: This allows for splitting phases into blocks. If `show_block_dividers` is set to `True`, break screens will be included. Block values can re-start within every `phase`.
 - `trial_id`: A running ID for trials. They are written into the data, they're not used for anything else.
+- `trial_type`: This variable is used to determine the `temporal_arrangement` setting. Within each block, if `temporal_arrangement` is set to `"interleaved"`, all trial types are shuffled randomly. In contrast, if `temporal_arrangement` is set to `"blocked", trials with the same `trial_type` remain chunked together, but the chunk order is shuffled.
 - `symbol1`, `symbol2`: These specify the symbols shown for each trial. Training symbols are denoted with `T` (e.g., `T1`). Task symbols are denoted with uppercase letters `A`, `B`, etc. Note, that the task will map different symbols (i.e., image files) to these symbol IDs for each run.
 - `option1pos`: Denotes the position (`left` or `right`) of option 1. Option 2 will take the other position.
 - `feedback`: Sets the feedback condition. This lets you change behavior in `transfer` and `explicit` phases. Accepted values are:
@@ -51,9 +54,10 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] Test random icon mapping with full logfile
+- [ ] Double triple check data, responses, etc.
 - [ ] Include serial port triggers
+- [x] ~~Double check temporal arrangement options. I think there should also be randomization if this is "blocked".~~
 - [x] ~~fix bug with random seed. currently, changing it in the GUI doesnt do anything~~
 - [x] ~~Fix ImageSlide instructions~~
 - [x] ~~End screen message can be SlideShow, too~~

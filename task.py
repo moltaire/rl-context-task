@@ -25,6 +25,7 @@ from string import ascii_uppercase
 
 import numpy as np
 import pandas as pd
+import random
 from os.path import join
 import os
 import json
@@ -527,6 +528,9 @@ if __name__ == "__main__":
                 keys_skip=[exp_info["buttons"]["button_instr_skip"]],
             )
             response = instruction.run()
+            # Blank screen after instructions
+            win.flip()
+            core.wait(exp_info["duration_first_trial_blank"])
 
             ## Iterate over blocks
             blocks = conditions_phase["block"].unique()
@@ -547,18 +551,32 @@ if __name__ == "__main__":
                             ],
                             keys_finish=[exp_info["buttons"]["button_instr_finish"]],
                         ).run()
+                        # Blank screen after block message
+                        win.flip()
+                        core.wait(exp_info["duration_first_trial_blank"])
 
                 trials_block = conditions_phase.loc[conditions_phase["block"] == block]
 
                 # Temporal arrangement: Blocked or interleaved
-                ## Currently, "interleaved" randomly shuffles all trials in this block
-                ## "blocked" does not do anything to the order of trials in `conditions.csv`
+                ## "interleaved" randomly shuffles all trials in this block
                 if exp_info["temporal_arrangement"] == "interleaved":
                     trials_block = trials_block.sample(frac=1)
-
-                # Blank screen before first trial of each block
-                win.flip()
-                core.wait(exp_info["duration_first_trial_blank"])
+                ## "blocked" will keep trials of the same `trial_type` in this block together,
+                ## but randomize the order of these trial_type chunks
+                elif exp_info["temporal_arrangement"] == "blocked":
+                    # split by trial_type
+                    chunks = [
+                        trials_of_type
+                        for _, trials_of_type in trials_block.groupby("trial_type")
+                    ]
+                    # shuffle chunks
+                    random.shuffle(chunks)
+                    # concatenate them
+                    trials_block = pd.concat(chunks).reset_index(drop=True)
+                else:
+                    raise ValueError(
+                        f"`temporal_arrangement` must be in ['interleaved', 'blocked], but is '{exp_info['temporal_arrangement']}'."
+                    )
 
                 # Iterate through trials of this block
                 for idx, trial_info in trials_block.iterrows():
@@ -601,7 +619,7 @@ if __name__ == "__main__":
     # This phase has a bit more code than the others to allow for it to be repeated.
 
     n_repeats = 0
-    repeat_training = True
+    repeat_training = False # set to False to skip training
     while repeat_training and n_repeats <= training_n_repeats_max:
         run_phase(
             phase="training",
@@ -691,9 +709,10 @@ if __name__ == "__main__":
     debriefing.run()
 
     # Print total points earned to console
-    print(40 * "$")
-    print(f"$$$ Total points earned: {exp_info['total_reward']} Pts. $$$")
-    print(40 * "$")
+    total_score_string = f"$$$ Total points earned: {exp_info['total_reward']} Pts. $$$"
+    print(len(total_score_string) * "$")
+    print(total_score_string)
+    print(len(total_score_string) * "$")
 
     # Finish the experiment
     core.quit()
