@@ -9,7 +9,7 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 - [ ] Implement left/right shuffle (currently called `stim1pos`)
 - [ ] Implement random assignment of icons to choice options
 - [ ] Implement explicit phase 
-- [ ] Fix instruction slideshow
+- [x] Fix instruction slideshow
 - [ ] Ensure all data is recorded (ideally, just include all condition data)
 - [ ] Prepare serial port triggers (via `exp_info`?)
 - [ ] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
