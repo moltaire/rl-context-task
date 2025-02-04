@@ -1,3 +1,5 @@
+![alt text](stim/images/10.png)![alt text](stim/images/9.png)![alt text](stim/images/1.png)![alt text](stim/images/4.png)
+
 # Context-dependent reinforcement-learning task
 
 The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and described in Bavard et al. (2021; Exp. 7).
