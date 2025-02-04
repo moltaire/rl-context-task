@@ -149,13 +149,14 @@ if __name__ == "__main__":
     exp_info["Time"] = data.getDateStr(format="%H%M")
 
     # Draw a random random seed
-    exp_info["random_seed"] = np.random.randint(100, 999)
+    random_seed = np.random.randint(100, 999)
+    exp_info["random_seed"] = random_seed
 
     # Present the dialog to change parameters:
     dlg = gui.DlgFromDict(exp_info, title=experiment_name, fixed=["Date", "Time"])
 
     # Set and save random seed
-    np.random.seed(exp_info["random_seed"])
+    np.random.seed(random_seed)
 
     if dlg.OK:
         toFile("lastRunSettings.pickle", exp_info)
@@ -180,14 +181,15 @@ if __name__ == "__main__":
     # Build the logfile name
     logfile_name = f"task-{experiment_label}_subject-{exp_info['Subject']}_date-{exp_info['Date']}_time-{exp_info['Time']}"
     logfile_path = os.path.join(logfile_folder, logfile_name)
-    exp_info["logfile_path"] = logfile_path
 
-    # Save all experiment settings
+    # Save all other experiment settings
+    ## Duration
     exp_info["duration_timeout"] = duration_timeout
     exp_info["duration_choice"] = duration_choice
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
-    exp_info["temporal_arrangement"] = temporal_arrangement
+
+    ## Visuals
     exp_info["background_color"] = background_color
     exp_info["text_color"] = text_color
     exp_info["outcome_color"] = outcome_color
@@ -198,6 +200,9 @@ if __name__ == "__main__":
     exp_info["rect_height"] = rect_height
     exp_info["pos_left"] = pos_left
     exp_info["pos_right"] = pos_right
+
+    ## Experiment Flow
+    exp_info["temporal_arrangement"] = temporal_arrangement
     exp_info["buttons"] = dict(
         button_quit=button_quit,
         button_left=button_left,
@@ -210,11 +215,14 @@ if __name__ == "__main__":
         button_instr_repeat=button_instr_repeat,
     )
     exp_info["stimuli"] = dict(conditions=conditions.to_dict())
-    exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
+    exp_info["stimulus_map"] = dict(
+        task_symbol_map, **training_symbol_map
+    )  # combines task- and training symbol map
     exp_info["training_n_repeats_max"] = training_n_repeats_max
     exp_info["show_block_dividers"] = show_block_dividers
     exp_info["show_score_after_phase"] = show_score_after_phase
     exp_info["total_reward"] = 0  # used to track reward
+    exp_info["logfile_path"] = logfile_path
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
@@ -228,9 +236,9 @@ if __name__ == "__main__":
         name=experiment_name, version=__version__, dataFileName=logfile_path
     )
 
-    ###############################
-    ## Set up window and stimuli ##
-    ###############################
+    ######################################
+    ## Set up window and visual stimuli ##
+    ######################################
 
     # Set up the experiment window
     win = visual.Window(
@@ -238,7 +246,7 @@ if __name__ == "__main__":
         monitor=monitor,
         fullscr=fullscreen,
         units="height",
-        color=exp_info["background_color"],
+        color=background_color,
     )
     win.mouseVisible = False
 
@@ -299,7 +307,7 @@ if __name__ == "__main__":
     )
     fb_rects = [fb_rect_left, fb_rect_right]
 
-    # Outcomes
+    ## Outcomes
     outcome_left = visual.TextStim(
         win,
         text="",
@@ -316,7 +324,7 @@ if __name__ == "__main__":
     )
     outcomes = [outcome_left, outcome_right]
 
-    # Explicit phase TextStims
+    ## Explicit phase TextStims
     explicit_left = visual.TextStim(
         win,
         text="",
@@ -333,7 +341,7 @@ if __name__ == "__main__":
     )
     explicit = [explicit_left, explicit_right]
 
-    # save all pre-made visual elements
+    # Save all pre-made visual elements
     visual_elements = dict(
         images=images,
         bg_rects=bg_rects,
@@ -341,11 +349,12 @@ if __name__ == "__main__":
         explicit=explicit,
         fb_rects=fb_rects,
     )
+    ## They are saved to `exp_info` so that `run_phase` and `Trial.run()` can use them
     exp_info["visual_elements"] = visual_elements
 
-    ####
-    # Instructions
-    ###
+    ################
+    # Instructions #
+    ################
 
     ## Training phase
     n_slides = 3
@@ -355,17 +364,17 @@ if __name__ == "__main__":
             text=(
                 f"Instructions: Training Phase\n"
                 + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f'({exp_info["buttons"]["button_instr_previous"].capitalize()}) Previous - '
-                + f'({exp_info["buttons"]["button_instr_next"].capitalize()}) Next - '
-                + f'({exp_info["buttons"]["button_instr_skip"].capitalize()}) Skip'
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
                 + (
-                    f' - ({exp_info["buttons"]["button_instr_finish"].capitalize()}) Continue with task'
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
                     if i == (n_slides - 1)
                     else ""
                 )
             ),
-            height=exp_info["text_height"],
-            color=exp_info["text_color"],
+            height=text_height,
+            color=text_color,
         )
         for i in range(n_slides)
     ]
@@ -378,17 +387,17 @@ if __name__ == "__main__":
             text=(
                 f"Instructions: Learning Phase\n"
                 + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f'({exp_info["buttons"]["button_instr_previous"].capitalize()}) Previous - '
-                + f'({exp_info["buttons"]["button_instr_next"].capitalize()}) Next - '
-                + f'({exp_info["buttons"]["button_instr_skip"].capitalize()}) Skip'
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
                 + (
-                    f' - ({exp_info["buttons"]["button_instr_finish"].capitalize()}) Continue with task'
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
                     if i == (n_slides - 1)
                     else ""
                 )
             ),
-            height=exp_info["text_height"],
-            color=exp_info["text_color"],
+            height=text_height,
+            color=text_color,
         )
         for i in range(n_slides)
     ]
@@ -401,17 +410,17 @@ if __name__ == "__main__":
             text=(
                 f"Instructions: Transfer Phase\n"
                 + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
-                + f'({exp_info["buttons"]["button_instr_previous"].capitalize()}) Previous - '
-                + f'({exp_info["buttons"]["button_instr_next"].capitalize()}) Next - '
-                + f'({exp_info["buttons"]["button_instr_skip"].capitalize()}) Skip'
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
                 + (
-                    f' - ({exp_info["buttons"]["button_instr_finish"].capitalize()}) Continue with task'
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
                     if i == (n_slides - 1)
                     else ""
                 )
             ),
-            height=exp_info["text_height"],
-            color=exp_info["text_color"],
+            height=text_height,
+            color=text_color,
         )
         for i in range(n_slides)
     ]
@@ -424,17 +433,17 @@ if __name__ == "__main__":
             text=(
                 f"Instructions: Explicit Phase\n"
                 + f"Slide {i + 1}/{n_slides} text. No more symbols, but numbers!\n\n"
-                + f'({exp_info["buttons"]["button_instr_previous"].capitalize()}) Previous - '
-                + f'({exp_info["buttons"]["button_instr_next"].capitalize()}) Next - '
-                + f'({exp_info["buttons"]["button_instr_skip"].capitalize()}) Skip'
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
                 + (
-                    f' - ({exp_info["buttons"]["button_instr_finish"].capitalize()}) Continue with task'
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
                     if i == (n_slides - 1)
                     else ""
                 )
             ),
-            height=exp_info["text_height"],
-            color=exp_info["text_color"],
+            height=text_height,
+            color=text_color,
         )
         for i in range(n_slides)
     ]
@@ -444,7 +453,15 @@ if __name__ == "__main__":
     ######################
 
     def run_phase(phase, conditions, instruction_slides, exp_info, exp, win):
-        """Runs a single phase of the task.
+        """
+        This function runs a single phase of the task.
+
+        Specifically, it
+        - selects the conditions for this phase
+        - shows instructions
+        - runs trials (with optional block dividers)
+        - optionally shows points tally after phase is done
+
 
         Args:
             phase (str): "training", "learning", "transfer", or "explicit"
@@ -492,11 +509,15 @@ if __name__ == "__main__":
                         ).run()
 
                 trials_block = conditions_phase.loc[conditions_phase["block"] == block]
+
+                # Temporal arrangement: Blocked or interleaved
+                ## Currently, "interleaved" randomly shuffles all trials in this block
+                ## "blocked" does not do anything to the order of trials in `conditions.csv`
                 if exp_info["temporal_arrangement"] == "interleaved":
                     trials_block = trials_block.sample(frac=1)
+
                 for idx, trial_info in trials_block.iterrows():
                     print(trial_info)
-
                     trial = Trial(
                         trial_info=trial_info,
                         exp=exp,
@@ -551,19 +572,19 @@ if __name__ == "__main__":
             slides=[
                 TextSlide(
                     win=win,
-                    text=f"Mit '{exp_info['buttons']['button_instr_repeat'].capitalize()}' Training wiederholen\n\n"
-                    + f"oder\n\nmit '{exp_info['buttons']['button_instr_finish'].capitalize()}' fortfahren.",
-                    height=exp_info["text_height"],
-                    color=exp_info["text_color"],
+                    text=f"Mit '{button_instr_repeat.capitalize()}' Training wiederholen\n\n"
+                    + f"oder\n\nmit '{button_instr_finish.capitalize()}' fortfahren.",
+                    height=text_height,
+                    color=text_color,
                 ),
             ],
             keys_finish=[
-                exp_info["buttons"]["button_instr_finish"],
-                exp_info["buttons"]["button_instr_repeat"],
+                button_instr_finish,
+                button_instr_repeat,
             ],
         ).run()
 
-        if not exp_info["buttons"]["button_instr_repeat"] in response:
+        if not button_instr_repeat in response:
             repeat_training = False
         else:
             n_repeats += 1
@@ -574,12 +595,12 @@ if __name__ == "__main__":
                         TextSlide(
                             win=win,
                             text=f"Sie haben bereits die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit "
-                            + f"'{exp_info['buttons']['button_instr_finish'].capitalize()}' beginnen.",
-                            height=exp_info["text_height"],
-                            color=exp_info["text_color"],
+                            + f"'{button_instr_finish.capitalize()}' beginnen.",
+                            height=text_height,
+                            color=text_color,
                         ),
                     ],
-                    keys_finish=[exp_info["buttons"]["button_instr_finish"]],
+                    keys_finish=[button_instr_finish],
                 ).run()
 
     # -------------- #
@@ -625,15 +646,15 @@ if __name__ == "__main__":
     end_screen = visual.TextStim(
         win,
         end_screen_message
-        + f"\n\n'{exp_info['buttons']['button_quit'].capitalize()}' um das Experiment zu beenden.",
-        height=exp_info["text_height"],
-        color=exp_info["text_color"],
+        + f"\n\n'{button_quit.capitalize()}' um das Experiment zu beenden.",
+        height=text_height,
+        color=text_color,
     )
     end_screen.draw()
     win.flip()
 
     ## Wait for keypress
-    event.waitKeys(keyList=[exp_info["buttons"]["button_quit"]])
+    event.waitKeys(keyList=[button_quit])
 
     # Finish the experiment
     core.quit()
