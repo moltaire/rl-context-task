@@ -229,6 +229,10 @@ class Trial(object):
         core.wait(self.exp_info["duration_iti"])
 
     def log(self):
+        # Add subject and session information
+        self.trial_info["subject"] = self.exp_info["Subject"]
+        self.trial_info["session"] = self.exp_info["Session"]
+        
         ## Copy all information from trial_info
         for var, val in self.trial_info.items():
             self.exp.addData(var, val)

@@ -142,7 +142,7 @@ if __name__ == "__main__":
         exp_info = {
             "Subject": "",
             "Experimenter": "",
-            "Session:": "",
+            "Session": "",
         }
     # Add current time
     exp_info["Date"] = data.getDateStr(format="%Y%m%d")
