@@ -21,28 +21,32 @@ from src import ImageSlide, TextSlide, SlideShow, Trial
 
 if __name__ == "__main__":
 
-    #########################
-    ## Experiment settings ##
-    #########################
-
+    ###################################
+    # ===== Experiment Settings ===== #
+    ###################################
+    # Change variables to customize the
+    # task. Possible variable values are
+    # described in comments.
+    
     ## Experiment
     experiment_name = (
         "Reinforcement-Learning Task"  # Name of the experiment shown in menus
     )
     experiment_label = "rl-context-task"  # Label of the experiment, used in logfiles
+    __version__ = 0.1  # because I pretend to know how to make software
 
     # General experiment flow and settings
     ## Temporal arrangement: Randomize trial order within a block? "blocked" or "interleaved"? (See Bavard et al., 2021, Fig 1)
-    temporal_arrangement = "blocked"  # blocked, interleaved; Gueguen used blocked
+    temporal_arrangement = "blocked"  # ["blocked", "interleaved"]; Gueguen used "blocked", Bavard et al., (2021) tried both.
 
     ## Training settings
     training_n_repeats_max = 2  # Maximum number of training repetitions
 
     ## Show block dividers
-    show_block_dividers = False
+    show_block_dividers = False # [True, False]
 
     ## Show score between rounds
-    show_score_after_phase = True
+    show_score_after_phase = True # [True, False]
 
     # Trials / Conditions
     ## Trial information will be loaded from a separate .csv file
@@ -51,6 +55,7 @@ if __name__ == "__main__":
     ## Get the number of symbols needed
     ## After a random number generator seed has been set, there will be a
     ## participant-specific mapping of symbols (e.g., 1.png) to IDs (e.g., A)
+    ## Don't change unless you're really sure about it.
     n_symbols_training = np.unique(
         conditions.query("phase == 'training'")[["symbol1", "symbol2"]].values.ravel()
     ).size
@@ -62,8 +67,9 @@ if __name__ == "__main__":
     )
 
     # Buttons
+    ## (any keyboard button code will do for these)
     ## Responses
-    button_left = "f"
+    button_left = "f"  
     button_right = "j"
 
     ## Quit button (don't tell participants)
@@ -78,6 +84,7 @@ if __name__ == "__main__":
     button_instr_quit = button_quit  # quit experiment
 
     # Timing
+    ## Timing variables are provided in seconds
     duration_timeout = float(
         "inf"
     )  # timeout duration, float("inf") = self paced, used by Bavard & Gueguen
@@ -87,7 +94,7 @@ if __name__ == "__main__":
 
     # Visual stim settings
     ## General background and text
-    background_color = "lightgray"
+    background_color = "lightgray"  # named colors or RGB triplets (e.g., (1, 0, 0))
     text_color = "black"
     text_height = 0.05  # in fraction of display height
 
@@ -104,9 +111,9 @@ if __name__ == "__main__":
     outcome_color_counterfactual = "gray"
 
     ## Background rectangle
-    rect_linewidth = 3
-    rect_width = 0.25
-    rect_height = 0.25
+    rect_linewidth = 3  # I think this is pixels?
+    rect_width = 0.25  # monitor height units
+    rect_height = 0.25 # monitor height units
     rect_linecolor = "black"
     rect_background_color = "white"
 
@@ -121,6 +128,7 @@ if __name__ == "__main__":
 
     # Logfile
     logfile_folder = "data"  # folder where to save logfiles
+    ## Create folder if it does not exist
     if not os.path.exists(logfile_folder):
         os.makedirs(logfile_folder)
 
@@ -128,12 +136,14 @@ if __name__ == "__main__":
     serial_port = None  # e.g., None if not in use
     # TODO: Include this. # # # # # # # # # # # # #
 
-    # Misc.
-    __version__ = 0.1  # because I pretend to know how to make software
+    ##############################
+    # ===== Experiment GUI ===== #
+    ##############################
+    # This configures the little 
+    # dialogue box to enter infos.
+    # You should not be required 
+    # to make changes here.
 
-    ############################
-    ## Experiment setting GUI ##
-    ############################
     # Try to read experiment settings from a previous run
     try:
         exp_info = fromFile("lastRunSettings.pickle")
@@ -162,6 +172,120 @@ if __name__ == "__main__":
         toFile("lastRunSettings.pickle", exp_info)
     else:
         core.quit()
+
+    ############################
+    # ===== Window setup ===== #
+    ############################
+    
+    win = visual.Window(
+        size=screen_size,
+        monitor=monitor,
+        fullscr=fullscreen,
+        units="height",
+        color=background_color,
+    )
+    win.mouseVisible = False
+
+    ############################
+    # ===== Instructions ===== #
+    ############################
+    # Adapt to your preference!
+
+    ## Training phase
+    n_slides = 3
+    instr_slides_training = [
+        TextSlide(
+            win=win,
+            text=(
+                f"Instructions: Training Phase\n"
+                + f"Slide {i + 1}/{n_slides} text.\n\n"
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
+                + (
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
+                    if i == (n_slides - 1)
+                    else ""
+                )
+            ),
+            height=text_height,
+            color=text_color,
+        )
+        for i in range(n_slides)
+    ]
+
+    ## Learning phase
+    n_slides = 3
+    instr_slides_learning = [
+        TextSlide(
+            win=win,
+            text=(
+                f"Instructions: Learning Phase\n"
+                + f"Slide {i + 1}/{n_slides} text.\n\n"
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
+                + (
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
+                    if i == (n_slides - 1)
+                    else ""
+                )
+            ),
+            height=text_height,
+            color=text_color,
+        )
+        for i in range(n_slides)
+    ]
+
+    ## Transfer phase
+    n_slides = 3
+    instr_slides_transfer = [
+        TextSlide(
+            win=win,
+            text=(
+                f"Instructions: Transfer Phase\n"
+                + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
+                + (
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
+                    if i == (n_slides - 1)
+                    else ""
+                )
+            ),
+            height=text_height,
+            color=text_color,
+        )
+        for i in range(n_slides)
+    ]
+
+    ## Explicit phase
+    n_slides = 3
+    instr_slides_explicit = [
+        TextSlide(
+            win=win,
+            text=(
+                f"Instructions: Explicit Phase\n"
+                + f"Slide {i + 1}/{n_slides} text. No more symbols, but numbers!\n\n"
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip"
+                + (
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
+                    if i == (n_slides - 1)
+                    else ""
+                )
+            ),
+            height=text_height,
+            color=text_color,
+        )
+        for i in range(n_slides)
+    ]
+
+    #########################################################################################################
+    ## FROM THIS POINT ON, THERE BE DRAGONS. ONLY GO THERE IF YOU KNOW WHAT YOU'RE DOING AND HAVE A BACKUP ##
+    #########################################################################################################
 
     # Make random mapping of symbol IDs (ABCDEFGH and training ones) to images (1,2,3,4,5.png)
     symbol_ids = ascii_uppercase[:n_symbols_task]
@@ -236,19 +360,9 @@ if __name__ == "__main__":
         name=experiment_name, version=__version__, dataFileName=logfile_path
     )
 
-    ######################################
-    ## Set up window and visual stimuli ##
-    ######################################
-
-    # Set up the experiment window
-    win = visual.Window(
-        size=screen_size,
-        monitor=monitor,
-        fullscr=fullscreen,
-        units="height",
-        color=background_color,
-    )
-    win.mouseVisible = False
+    ###########################
+    ## Set up visual stimuli ##
+    ###########################
 
     # Set up stimuli
     ## Stimulus Images
@@ -351,102 +465,6 @@ if __name__ == "__main__":
     )
     ## They are saved to `exp_info` so that `run_phase` and `Trial.run()` can use them
     exp_info["visual_elements"] = visual_elements
-
-    ################
-    # Instructions #
-    ################
-
-    ## Training phase
-    n_slides = 3
-    instr_slides_training = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Training Phase\n"
-                + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ## Learning phase
-    n_slides = 3
-    instr_slides_learning = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Learning Phase\n"
-                + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ## Transfer phase
-    n_slides = 3
-    instr_slides_transfer = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Transfer Phase\n"
-                + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ## Explicit phase
-    n_slides = 3
-    instr_slides_explicit = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Explicit Phase\n"
-                + f"Slide {i + 1}/{n_slides} text. No more symbols, but numbers!\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
 
     ######################
     ## Start experiment ##
