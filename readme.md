@@ -6,14 +6,15 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Todo
 
-- [x] Implement left/right shuffle (currently called `stim1pos`)
+- [ ] Implement temporal arrangement (`temporal_arrangement`; blocked vs. interleaved)
 - [ ] Implement random assignment of icons to choice options
 - [ ] Implement explicit phase 
-- [x] Fix instruction slideshow
 - [ ] Ensure all data is recorded (ideally, just include all condition data)
-- [ ] Prepare serial port triggers (via `exp_info`?)
 - [ ] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
+- [ ] Prepare serial port triggers (via `exp_info`?)
 - [ ] Make trials look nicer
+- [x] Fix instruction slideshow
+- [x] Implement left/right shuffle (currently called `stim1pos`)
 
 ## Details
 
