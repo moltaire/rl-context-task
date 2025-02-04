@@ -9,8 +9,8 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 - [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] End screen message can be SlideShow, too
-- [ ] Remove unnecessary "exp_info" in main script. only necessary within functions
 - [ ] Fix ImageSlide instructions
+- [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
 - [x] ~~Include intermediate points tally~~
 - [x] ~~Ensure all data are recorded~~
 - [x] ~~Keep track of rewards over trials (for each phase)~~
