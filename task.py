@@ -20,6 +20,7 @@ import json
 from src import ImageSlide, TextSlide, SlideShow, Trial
 
 if __name__ == "__main__":
+
     #########################
     ## Experiment settings ##
     #########################
@@ -85,9 +86,9 @@ if __name__ == "__main__":
     button_instr_quit = button_quit
     button_instr_repeat = "r"  # to repeat training (and instructions)
 
-    # PLACEHOLDER FOR SERIAL PORT SETUP
-    #
+    # PLACEHOLDER FOR SERIAL PORT SETUP # # # # # #
     serial_port = None  # e.g., None if not in use
+    # TODO: Include this. # # # # # # # # # # # # #
 
     # Misc.
     __version__ = 0.1  # because I pretend to know how to make software
@@ -479,13 +480,15 @@ if __name__ == "__main__":
     # -------------- #
     # Explicit phase #
     # -------------- #
-    print("Explicit phase")
-    visual.TextStim(
-        win,
-        f"Explicit phase is work in progress. Continue with '{exp_info['buttons']['button_instr_finish'].capitalize()}'.",
-        height=text_height,
-    ).draw()
-    win.flip()
+    SlideShow(
+        win=win,
+        slides=instr_slides_explicit,
+        keys_next=[exp_info["buttons"]["button_instr_next"]],
+        keys_previous=[exp_info["buttons"]["button_instr_previous"]],
+        keys_skip=[exp_info["buttons"]["button_instr_skip"]],
+        keys_finish=[exp_info["buttons"]["button_instr_finish"]],
+        keys_quit=[exp_info["buttons"]["button_quit"]],
+    ).run()
 
     ## Wait for keypress
     event.waitKeys(keyList=[exp_info["buttons"]["button_instr_finish"]])
