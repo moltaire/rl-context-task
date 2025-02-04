@@ -61,6 +61,8 @@ if __name__ == "__main__":
     outcome_color_counterfactual = "gray"
     rect_linecolor = "black"
     rect_background_color = "white"
+    symbol_width = 0.24
+    symbol_height = 0.24
 
     ## feedback rectangle
     fb_rect_linewidth = 6
@@ -216,10 +218,16 @@ if __name__ == "__main__":
     ## Stimulus Images
     ## Image files are just placeholder, will be replaced in `trial.prepare()`
     image_left = visual.ImageStim(
-        win, image=join("stim", "images", "1.png"), pos=(pos_left, 0)
+        win,
+        image=join("stim", "images", "1.png"),
+        pos=(pos_left, 0),
+        size=(symbol_width, symbol_height),
     )
     image_right = visual.ImageStim(
-        win, image=join("stim", "images", "2.png"), pos=(pos_right, 0)
+        win,
+        image=join("stim", "images", "2.png"),
+        pos=(pos_right, 0),
+        size=(symbol_width, symbol_height),
     )
     images = [image_left, image_right]
 
@@ -269,14 +277,14 @@ if __name__ == "__main__":
         text="",
         pos=(pos_left, 0),
         height=text_height,
-        color=exp_info["outcome_color"],
+        color=outcome_color,
     )
     outcome_right = visual.TextStim(
         win,
         text="",
         pos=(pos_right, 0),
         height=text_height,
-        color=exp_info["outcome_color"],
+        color=outcome_color,
     )
     outcomes = [outcome_left, outcome_right]
 
@@ -286,14 +294,14 @@ if __name__ == "__main__":
         text="",
         pos=(pos_left, 0),
         height=text_height,
-        color=exp_info["text_color"],
+        color=text_color,
     )
     explicit_right = visual.TextStim(
         win,
         text="",
         pos=(pos_right, 0),
         height=text_height,
-        color=exp_info["text_color"],
+        color=text_color,
     )
     explicit = [explicit_left, explicit_right]
 
