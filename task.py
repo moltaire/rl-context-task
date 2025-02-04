@@ -598,6 +598,7 @@ if __name__ == "__main__":
     # -------------- #
     # Training phase #
     # -------------- #
+    # This phase has a bit more code than the others to allow for it to be repeated.
 
     n_repeats = 0
     repeat_training = True
@@ -688,6 +689,11 @@ if __name__ == "__main__":
     # End of experiment / Debriefing #
     # ------------------------------ #
     debriefing.run()
+
+    # Print total points earned to console
+    print(40 * "$")
+    print(f"$$$ Total points earned: {exp_info['total_reward']} Pts. $$$")
+    print(40 * "$")
 
     # Finish the experiment
     core.quit()
