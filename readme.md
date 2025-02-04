@@ -51,11 +51,11 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] fix bug with random seed. currently, changing it in the GUI doesnt do anything
-- [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
+- [ ] Test random icon mapping with full logfile
 - [ ] Include serial port triggers
-- [x] Fix ImageSlide instructions
+- [x] ~~fix bug with random seed. currently, changing it in the GUI doesnt do anything~~
+- [x] ~~Fix ImageSlide instructions~~
 - [x] ~~End screen message can be SlideShow, too~~
 - [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
 - [x] ~~Include intermediate points tally~~

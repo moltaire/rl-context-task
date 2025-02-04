@@ -179,7 +179,7 @@ if __name__ == "__main__":
     dlg = gui.DlgFromDict(exp_info, title=experiment_name, fixed=["Date", "Time"])
 
     # Set and save random seed
-    np.random.seed(random_seed)
+    np.random.seed(exp_info["random_seed"])
 
     if dlg.OK:
         toFile("lastRunSettings.pickle", exp_info)
