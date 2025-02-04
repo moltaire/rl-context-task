@@ -11,9 +11,9 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 - [ ] Test random icon mapping with full logfile
 - [ ] Make trials look nicer
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
-- [ ] Refactor code to reduce duplication across phases
 - [ ] Keep track of rewards over trials (for each phase)
 - [ ] End screen message can be SlideShow, too
+- [x] Refactor code to reduce duplication across phases
 - [x] Prepare serial port triggers (via `exp_info`?)
 - [x] Implement ITI
 - [x] Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)
