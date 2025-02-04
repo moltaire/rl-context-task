@@ -43,6 +43,9 @@ if __name__ == "__main__":
     # Show block dividers
     show_block_dividers = False
 
+    # Show score between rounds
+    show_score_after_phase = True
+
     # Timing
     duration_timeout = float(
         "inf"
@@ -191,7 +194,8 @@ if __name__ == "__main__":
     exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
     exp_info["training_n_repeats_max"] = training_n_repeats_max
     exp_info["show_block_dividers"] = show_block_dividers
-    exp_info["total_reward"] = 0 # used to track reward
+    exp_info["show_score_after_phase"] = show_score_after_phase
+    exp_info["total_reward"] = 0  # used to track reward
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
@@ -484,6 +488,23 @@ if __name__ == "__main__":
                     trial.prepare()
                     trial.run()
                     trial.log()
+
+        # (optional) show score after phase (not after training, though)
+        if phase != "training":
+            if exp_info["show_score_after_phase"]:
+                SlideShow(
+                    win=win,
+                    slides=[
+                        TextSlide(
+                            win=win,
+                            text=f"Bisher haben Sie {exp_info['total_reward']:.0f} Punkte gesammelt!"
+                            + f"\n\nMit '{exp_info['buttons']['button_instr_finish'].capitalize()}' fortfahren.",
+                            height=exp_info["text_height"],
+                            color=exp_info["text_color"],
+                        ),
+                    ],
+                    keys_finish=[exp_info["buttons"]["button_instr_finish"]],
+                ).run()
 
         else:  # No conditions to show
             print(f"No conditions with phase '{phase}' in `conditions`.")
