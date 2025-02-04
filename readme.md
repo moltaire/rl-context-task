@@ -21,7 +21,7 @@ The conditions-file should have the following columns:
   - `explicit`: In this phase, no symbols are shown. Instead `probability` and `outcome` are shown explicitly for each option. 
 - `block`: This allows for splitting phases into blocks. If `show_block_dividers` is set to `True`, break screens will be included. Block values can re-start within every `phase`.
 - `trial_id`: A running ID for trials. They are written into the data, they're not used for anything else.
-- `trial_type`: This variable is used to determine the `temporal_arrangement` setting. Within each block, if `temporal_arrangement` is set to `"interleaved"`, all trial types are shuffled randomly. In contrast, if `temporal_arrangement` is set to `"blocked", trials with the same `trial_type` remain chunked together, but the chunk order is shuffled.
+- `trial_type`: This variable is used to determine the `temporal_arrangement` setting. Within each block, if `temporal_arrangement` is set to `"interleaved"`, all trial types are shuffled randomly. In contrast, if `temporal_arrangement` is set to `"blocked"`, trials with the same `trial_type` remain chunked together, but the chunk order is shuffled.
 - `symbol1`, `symbol2`: These specify the symbols shown for each trial. Training symbols are denoted with `T` (e.g., `T1`). Task symbols are denoted with uppercase letters `A`, `B`, etc. Note, that the task will map different symbols (i.e., image files) to these symbol IDs for each run.
 - `option1pos`: Denotes the position (`left` or `right`) of option 1. Option 2 will take the other position.
 - `feedback`: Sets the feedback condition. This lets you change behavior in `transfer` and `explicit` phases. Accepted values are:
