@@ -55,6 +55,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] End screen message can be SlideShow, too
 - [ ] Fix ImageSlide instructions
+- [ ] Include serial port triggers
 - [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
 - [x] ~~Include intermediate points tally~~
 - [x] ~~Ensure all data are recorded~~
