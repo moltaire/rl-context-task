@@ -328,7 +328,8 @@ if __name__ == "__main__":
                     else ""
                 )
             ),
-            height=text_height,
+            height=exp_info["text_height"],
+            color=exp_info["text_color"],
         )
         for i in range(n_slides)
     ]
@@ -350,7 +351,8 @@ if __name__ == "__main__":
                     else ""
                 )
             ),
-            height=text_height,
+            height=exp_info["text_height"],
+            color=exp_info["text_color"],
         )
         for i in range(n_slides)
     ]
@@ -372,7 +374,8 @@ if __name__ == "__main__":
                     else ""
                 )
             ),
-            height=text_height,
+            height=exp_info["text_height"],
+            color=exp_info["text_color"],
         )
         for i in range(n_slides)
     ]
@@ -394,7 +397,8 @@ if __name__ == "__main__":
                     else ""
                 )
             ),
-            height=text_height,
+            height=exp_info["text_height"],
+            color=exp_info["text_color"],
         )
         for i in range(n_slides)
     ]
@@ -443,7 +447,8 @@ if __name__ == "__main__":
                             TextSlide(
                                 win=win,
                                 text=f"Block {b + 1} von {len(blocks)}\n\nMit '{exp_info['buttons']['button_instr_finish'].capitalize()}' beginnen",
-                                height=text_height,
+                                height=exp_info["text_height"],
+                                color=exp_info["text_color"],
                             ),
                         ],
                         keys_finish=[exp_info["buttons"]["button_instr_finish"]],
@@ -494,7 +499,8 @@ if __name__ == "__main__":
                     win=win,
                     text=f"Mit '{exp_info['buttons']['button_instr_repeat'].capitalize()}' Training wiederholen\n\n"
                     + f"oder\n\nmit '{exp_info['buttons']['button_instr_finish'].capitalize()}' fortfahren.",
-                    height=text_height,
+                    height=exp_info["text_height"],
+                    color=exp_info["text_color"],
                 ),
             ],
             keys_finish=[
@@ -515,7 +521,8 @@ if __name__ == "__main__":
                             win=win,
                             text=f"Sie haben bereits die maximale Anzahl an Wiederholungen der Übungsrunde erreicht.\n\nMit "
                             + f"'{exp_info['buttons']['button_instr_finish'].capitalize()}' beginnen.",
-                            height=text_height,
+                            height=exp_info["text_height"],
+                            color=exp_info["text_color"],
                         ),
                     ],
                     keys_finish=[exp_info["buttons"]["button_instr_finish"]],
@@ -536,14 +543,14 @@ if __name__ == "__main__":
     # -------------- #
     # Transfer phase #
     # -------------- #
-    # run_phase(
-    #     phase="transfer",
-    #     conditions=conditions,
-    #     instruction_slides=instr_slides_transfer,
-    #     exp_info=exp_info,
-    #     exp=exp,
-    #     win=win,
-    # )
+    run_phase(
+        phase="transfer",
+        conditions=conditions,
+        instruction_slides=instr_slides_transfer,
+        exp_info=exp_info,
+        exp=exp,
+        win=win,
+    )
 
     # -------------- #
     # Explicit phase #
@@ -560,12 +567,12 @@ if __name__ == "__main__":
     # ------------------------------ #
     # End of experiment / Debriefing #
     # ------------------------------ #
-    # Show end screen
     end_screen = visual.TextStim(
         win,
         end_screen_message
         + f"\n\n'{exp_info['buttons']['button_quit'].capitalize()}' to quit.",
-        height=text_height,
+        height=exp_info["text_height"],
+        color=exp_info["text_color"],
     )
     end_screen.draw()
     win.flip()
