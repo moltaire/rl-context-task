@@ -2,6 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
+Two-Armed-Bandit Reinforcement-Learning-Task
+with training, learning, transfer, and explicit phases,
+and options to control feedback information.
+Modelled after Bavard et al. (2021) and Gueguen et al. (2024)
+
+For documentation beyond this file, see:
+https://github.com/moltaire/rl-context-task
+
+References:
+- Bavard, S., Rustichini, A., & Palminteri, S. (2021). Two sides of the same coin: Beneficial and detrimental consequences of range adaptation in human reinforcement learning. Science Advances, 7(14), eabe0340. https://doi.org/10.1126/sciadv.abe0340
+- Gueguen, M. C. M., Anlló, H., Bonagura, D., Kong, J., Hafezi, S., Palminteri, S., & Konova, A. B. (2024). Recent Opioid Use Impedes Range Adaptation in Reinforcement Learning in Human Addiction. Biological Psychiatry, 95(10), 974–984. https://doi.org/10.1016/j.biopsych.2023.12.005
+
 Felix Molter
 2025-02-03
 felixmolter@gmail.com
@@ -235,6 +247,19 @@ if __name__ == "__main__":
             color=text_color,
         )
         for i in range(n_slides)
+    ]
+
+    ### Image slides
+    instr_slides_learning = [
+        ImageSlide(
+            win=win,
+            image=join(
+                "instructions",
+                "learning-phase",
+                f"rl-context-task_instructions_learning-phase.{i:03d}.png",
+            ),
+        )
+        for i in [1, 2, 3]
     ]
 
     ## Transfer phase
