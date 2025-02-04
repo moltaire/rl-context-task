@@ -51,6 +51,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
+- [ ] fix bug with random seed. currently, changing it in the GUI doesnt do anything
 - [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
 - [ ] End screen message can be SlideShow, too
