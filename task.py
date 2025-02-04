@@ -81,6 +81,10 @@ if __name__ == "__main__":
     button_instr_skip = "s"
     button_instr_quit = button_quit
 
+    # PLACEHOLDER FOR SERIAL PORT SETUP
+    #
+    serial_port = None  # e.g., None if not in use
+
     # Misc.
     __version__ = 0.1  # because I pretend to know how to make software
 
@@ -159,10 +163,13 @@ if __name__ == "__main__":
     )
     exp_info["stimuli"] = dict(conditions=conditions.to_dict())
     exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
-
+    
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
         json.dump(exp_info, file)
+
+    # Also add serial port (after .json dump)
+    exp_info["serial_port"] = serial_port
 
     # Set up experiment object
     exp = data.ExperimentHandler(
@@ -180,7 +187,6 @@ if __name__ == "__main__":
     win.mouseVisible = False
 
     # Set up stimuli
-
     # Stimulus Images
     image_left = visual.ImageStim(
         win, image=join("stim", "images", "t1.png"), pos=(pos_left, 0)

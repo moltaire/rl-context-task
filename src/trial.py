@@ -65,6 +65,10 @@ class Trial(object):
         ## Show stimuli and wait for response
         rt_start = self.win.flip()
 
+        # Serial port trigger example
+        # if self.exp_info["serial_port"] is not None:
+        #     self.exp_info["serial_port"].send_trigger(f"trial_{self.trial_id}_stimuli-on")
+
         # Choice phase
         ## When a choice was made, show the feedback frame for 500 ms
 
