@@ -1,4 +1,7 @@
-![alt text](stim/images/10.png)![alt text](stim/images/9.png)![alt text](stim/images/1.png)![alt text](stim/images/4.png)
+<img src="stim/images/10.png" alt="Reinforcement" width="20%" height="auto">
+<img src="stim/images/9.png" alt="Learning" width="20%" height="auto">
+<img src="stim/images/1.png" alt="Is" width="20%" height="auto">
+<img src="stim/images/4.png" alt="Fun" width="20%" height="auto">
 
 # Context-dependent reinforcement-learning task
 
