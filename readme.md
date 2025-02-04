@@ -1,6 +1,6 @@
 # Context-dependent reinforcement-learning task
 
-The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and descsribed in Bavard et al. (2021; Exp. 7).
+The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and described in Bavard et al. (2021; Exp. 7).
 
 ## Todos
 
@@ -15,7 +15,23 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 
 ## Details
 
-### Stimulus images
+### Conditions
+
+Conditions (i.e., trial information) is specified in a  `stim/conditions.csv`.
+
+### Addtional Task Settings
+
+Additional task settings (e.g., timing variables, colors, etc.) can be set in `task.py` in the "Experiment Settings" section.
+
+### Instructions
+
+Instructions are implemented as `src.slideshow.SlideShow`, allowing forward and backward navigation. Instruction content can be provided as plain text slides (using `src.slideshow.TextSlide`) or image slides (`src.slideshow.ImageSlide`), or a mix of the two.
+
+### Output
+
+If not specified differently, task data are saved to `data`. In addition to the experimental data, task settings (contained in the `exp_info` dictionary), and PsychoPy's own `.psydat` file are saved for every run.
+
+### Stimulus Images
 
 Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
