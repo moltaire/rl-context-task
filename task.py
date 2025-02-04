@@ -27,7 +27,7 @@ if __name__ == "__main__":
     # Change variables to customize the
     # task. Possible variable values are
     # described in comments.
-    
+
     ## Experiment
     experiment_name = (
         "Reinforcement-Learning Task"  # Name of the experiment shown in menus
@@ -43,10 +43,10 @@ if __name__ == "__main__":
     training_n_repeats_max = 2  # Maximum number of training repetitions
 
     ## Show block dividers
-    show_block_dividers = False # [True, False]
+    show_block_dividers = False  # [True, False]
 
     ## Show score between rounds
-    show_score_after_phase = True # [True, False]
+    show_score_after_phase = True  # [True, False]
 
     # Trials / Conditions
     ## Trial information will be loaded from a separate .csv file
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     # Buttons
     ## (any keyboard button code will do for these)
     ## Responses
-    button_left = "f"  
+    button_left = "f"
     button_right = "j"
 
     ## Quit button (don't tell participants)
@@ -113,7 +113,7 @@ if __name__ == "__main__":
     ## Background rectangle
     rect_linewidth = 3  # I think this is pixels?
     rect_width = 0.25  # monitor height units
-    rect_height = 0.25 # monitor height units
+    rect_height = 0.25  # monitor height units
     rect_linecolor = "black"
     rect_background_color = "white"
 
@@ -139,9 +139,9 @@ if __name__ == "__main__":
     ##############################
     # ===== Experiment GUI ===== #
     ##############################
-    # This configures the little 
+    # This configures the little
     # dialogue box to enter infos.
-    # You should not be required 
+    # You should not be required
     # to make changes here.
 
     # Try to read experiment settings from a previous run
@@ -176,7 +176,7 @@ if __name__ == "__main__":
     ############################
     # ===== Window setup ===== #
     ############################
-    
+
     win = visual.Window(
         size=screen_size,
         monitor=monitor,
@@ -282,6 +282,23 @@ if __name__ == "__main__":
         )
         for i in range(n_slides)
     ]
+
+    ## Debriefing
+    debriefing = SlideShow(
+        win=win,
+        slides=[
+            TextSlide(
+                win=win,
+                text=(
+                    f"Debriefing\n\n"
+                    + f"Ciao Kakao!\n"
+                    + f"Mit '{button_instr_finish.capitalize()}' beenden Sie das Experiment."
+                ),
+                height=text_height,
+                color=text_color,
+            )
+        ],
+    )
 
     #########################################################################################################
     ## FROM THIS POINT ON, THERE BE DRAGONS. ONLY GO THERE IF YOU KNOW WHAT YOU'RE DOING AND HAVE A BACKUP ##
@@ -660,19 +677,7 @@ if __name__ == "__main__":
     # ------------------------------ #
     # End of experiment / Debriefing #
     # ------------------------------ #
-    end_screen_message = "Ciao Kakao."
-    end_screen = visual.TextStim(
-        win,
-        end_screen_message
-        + f"\n\n'{button_quit.capitalize()}' um das Experiment zu beenden.",
-        height=text_height,
-        color=text_color,
-    )
-    end_screen.draw()
-    win.flip()
-
-    ## Wait for keypress
-    event.waitKeys(keyList=[button_quit])
+    debriefing.run()
 
     # Finish the experiment
     core.quit()

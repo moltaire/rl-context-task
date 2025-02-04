@@ -54,9 +54,9 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] fix bug with random seed. currently, changing it in the GUI doesnt do anything
 - [ ] Test random icon mapping with full logfile
 - [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
-- [ ] End screen message can be SlideShow, too
 - [ ] Fix ImageSlide instructions
 - [ ] Include serial port triggers
+- [x] ~~End screen message can be SlideShow, too~~
 - [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
 - [x] ~~Include intermediate points tally~~
 - [x] ~~Ensure all data are recorded~~
