@@ -11,11 +11,11 @@ class Trial(object):
         self.trial_id = trial_info["trial_id"]
         self.block = trial_info["block"]
         self.feedback = trial_info["feedback"]  # partial, complete, none
-        self.image1 = trial_info["image1"]
-        self.image2 = trial_info["image2"]
+        self.symbol1 = trial_info["symbol1"]
+        self.symbol2 = trial_info["symbol2"]
         self.outcome1 = trial_info["outcome1"]
         self.outcome2 = trial_info["outcome2"]
-        self.stim1pos = trial_info["stim1pos"]
+        self.symbol1pos = trial_info["symbol1pos"]
         self.exp = exp
         self.win = win
         self.exp_info = exp_info
@@ -28,8 +28,10 @@ class Trial(object):
         Updates the visual elements to use information from current `trial_info`.
         """
         # Set up images and outcomes
-        for imageStim, image in zip(self.imageStims, (self.image1, self.image2)):
-            imageStim.setImage(join("stim", "images", image))
+        for imageStim, symbol in zip(self.imageStims, (self.symbol1, self.symbol2)):
+            imageStim.setImage(
+                join("stim", "images", self.exp_info["stimulus_map"][symbol])
+            )
 
         # Set up outcomes
         for outcomeStim, outcome in zip(
@@ -38,20 +40,20 @@ class Trial(object):
             outcomeStim.setText(outcome)
 
         # Set positions
-        if self.stim1pos == "left":
+        if self.symbol1pos == "left":
             self.imageStims[0].setPos((self.exp_info["pos_left"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[0]
-        elif self.stim1pos == "right":
+        elif self.symbol1pos == "right":
             self.imageStims[0].setPos((self.exp_info["pos_right"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_left"], 0))
         else:
             raise ValueError(
-                f"`stim1pos` must be 'left' or 'right' (is '{self.stim1pos}')."
+                f"`symbol1pos` must be 'left' or 'right' (is '{self.symbol1pos}')."
             )
 
     def run(self):
@@ -95,14 +97,14 @@ class Trial(object):
                 print(key)
 
             # decode into choice (1 or 2)
-            if self.stim1pos == "left":
+            if self.symbol1pos == "left":
                 if response == "left":
                     choice = 1
                 elif response == "right":
                     choice = 2
                 else:
                     raise ValueError(response)
-            elif self.stim1pos == "right":
+            elif self.symbol1pos == "right":
                 if response == "left":
                     choice = 2
                 elif response == "right":
@@ -111,7 +113,7 @@ class Trial(object):
                     raise ValueError(response)
             else:
                 raise ValueError(
-                    f"`stim1pos` must be 'left' or 'right' (is '{self.stim1pos}')."
+                    f"`symbol1pos` must be 'left' or 'right' (is '{self.symbol1pos}')."
                 )
         else:
             # no button was pressed

@@ -9,6 +9,7 @@ felixmolter@gmail.com
 
 from psychopy import visual, event, core, data, gui, sound
 from psychopy.tools.filetools import fromFile, toFile
+from string import ascii_uppercase
 
 import numpy as np
 import pandas as pd
@@ -45,7 +46,7 @@ if __name__ == "__main__":
     choice_feedback = 500  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
     outcome_duration = 1000  # time for the outcome to be shown
 
-    ## visual stim settings
+    # Visual stim settings
     rect_linewidth = 3
     rect_width = 0.2
     rect_height = 0.2
@@ -53,33 +54,33 @@ if __name__ == "__main__":
     pos_right = +0.25
     outcome_color = "limegreen"
 
-    ## Screen
+    # Screen
     screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
     fullscreen = True
     monitor = "testMonitor"  # name of the monitor configuration used (see PsychoPy monitor settings)
 
-    ## Logfile
+    # Logfile
     logfile_folder = "data"  # folder where to save logfiles
     if not os.path.exists(logfile_folder):
         os.makedirs(logfile_folder)
 
-    ## Trials / Conditions
-    # Trial information will be loaded from a separate .csv file
+    # Trials / Conditions
+    ## Trial information will be loaded from a separate .csv file
     conditions = pd.read_csv(os.path.join("stim", "conditions.csv"))
 
-    ## Responses
+    # Responses
     button_quit = "escape"
     button_left = "f"
     button_right = "j"
 
-    ### Instruction buttons
+    # Instruction buttons
     button_instr_next = "right"
     button_instr_previous = "left"
     button_instr_finish = "space"
     button_instr_skip = "s"
     button_instr_quit = button_quit
 
-    ## Misc.
+    # Misc.
     __version__ = 0.1  # because I pretend to know how to make software
 
     ############################
@@ -103,16 +104,33 @@ if __name__ == "__main__":
     # Draw a random random seed
     exp_info["random_seed"] = np.random.randint(100, 999)
 
-    # Set and save random seed
-    np.random.seed(exp_info["random_seed"])
-
     # Present the dialog to change parameters:
     dlg = gui.DlgFromDict(exp_info, title=experiment_name, fixed=["Date", "Time"])
+
+    # Set and save random seed
+    np.random.seed(exp_info["random_seed"])
 
     if dlg.OK:
         toFile("lastRunSettings.pickle", exp_info)
     else:
         core.quit()
+
+    # Make random mapping of symbol IDs (ABCDEFGH and training ones) to images (1,2,3,4,5.png)
+    n_symbols_training = 4  # ideally read this from the conditions
+    n_symbols_task = 8  # ideally read this from the conditions
+    symbol_ids = ascii_uppercase[:n_symbols_task]
+    image_names = [f"{i + 1}.png" for i in range(n_symbols_task + n_symbols_training)]
+    np.random.shuffle(image_names)  # shuffle in place
+
+    # first n_symbols_training images are for training
+    training_symbol_map = {
+        f"T{i + 1}": image_names[i] for i in range(n_symbols_training)
+    }
+    # next n_symbols_task images are for main task
+    task_symbol_map = {
+        symbol_id: image_names[n_symbols_training + i]
+        for i, symbol_id in enumerate(symbol_ids)
+    }
 
     # Build the logfile name
     logfile_name = f"task-{experiment_label}_subject-{exp_info['Subject']}_date-{exp_info['Date']}_time-{exp_info['Time']}"
@@ -138,6 +156,7 @@ if __name__ == "__main__":
         button_right=button_right,
     )
     exp_info["stimuli"] = dict(conditions=conditions.to_dict())
+    exp_info["stimulus_map"] = dict(task_symbol_map, **training_symbol_map)
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:
@@ -215,9 +234,9 @@ if __name__ == "__main__":
                 + f"Slide {i + 1}/{n_slides} text.\n\n"
                 + f"({button_instr_previous.capitalize()}) Previous - "
                 + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip - "
+                + f"({button_instr_skip.capitalize()}) Skip"
                 + (
-                    f"({button_instr_finish.capitalize()}) Continue with task"
+                    f" - ({button_instr_finish.capitalize()}) Continue with task"
                     if i == (n_slides - 1)
                     else ""
                 )
@@ -312,9 +331,9 @@ if __name__ == "__main__":
                     + f"Slide {i + 1}/{n_slides} text.\n\n"
                     + f"({button_instr_previous.capitalize()}) Previous - "
                     + f"({button_instr_next.capitalize()}) Next - "
-                    + f"({button_instr_skip.capitalize()}) Skip - "
+                    + f"({button_instr_skip.capitalize()}) Skip"
                     + (
-                        f"({button_instr_finish.capitalize()}) Continue with task"
+                        f" - ({button_instr_finish.capitalize()}) Continue with task"
                         if i == (n_slides - 1)
                         else ""
                     )
@@ -390,9 +409,9 @@ if __name__ == "__main__":
                     + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
                     + f"({button_instr_previous.capitalize()}) Previous - "
                     + f"({button_instr_next.capitalize()}) Next - "
-                    + f"({button_instr_skip.capitalize()}) Skip - "
+                    + f"({button_instr_skip.capitalize()}) Skip"
                     + (
-                        f"({button_instr_finish.capitalize()}) Continue with task"
+                        f" - ({button_instr_finish.capitalize()}) Continue with task"
                         if i == (n_slides - 1)
                         else ""
                     )
@@ -457,7 +476,20 @@ if __name__ == "__main__":
     # Explicit phase #
     # -------------- #
     print("Explicit phase")
+    visual.TextStim(
+        win,
+        f"Explicit phase is work in progress. Continue with '{button_instr_finish}'.",
+        height=text_height,
+    )
+    end_screen.draw()
+    win.flip()
 
+    ## Wait for keypress
+    event.waitKeys(keyList=[button_instr_finish])
+
+    # ------------------------------ #
+    # End of experiment / Debriefing #
+    # ------------------------------ #
     # Show end screen
     end_screen = visual.TextStim(
         win,
