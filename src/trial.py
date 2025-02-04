@@ -24,13 +24,16 @@ class Trial(object):
         self.imageStims = visual_elements["images"]
 
     def prepare(self):
+        """
+        Updates the visual elements to use information from current `trial_info`.
+        """
         # Set up images and outcomes
-        # TODO: make left-right shuffle
+        # TODO: implement left-right shuffle
         for imageStim, image in zip(self.imageStims, (self.image1, self.image2)):
             imageStim.setImage(join("stim", "images", image))
 
         # Set up outcomes
-        # TODO: make left-right shuffle
+        # TODO: implement left-right shuffle
         for outcomeStim, outcome in zip(
             self.outcomeStims, (self.outcome1, self.outcome2)
         ):
@@ -93,9 +96,9 @@ class Trial(object):
         ## Show choice frame
         for image in self.imageStims:
             image.draw()
-        self.rects[choice - 1].draw()
+        self.rects[choice - 1].draw()  # TODO: broken if stim1pos is right
         self.win.flip()
-        core.wait(0.5)
+        core.wait(0.5) # TODO: move to exp_info
 
         ## Show outcome(s)
         if not self.feedback == "none":
@@ -103,8 +106,8 @@ class Trial(object):
                 [outcomeStim.draw() for outcomeStim in self.outcomeStims]
             elif self.feedback == "partial":
                 if not timed_out:
-                    self.outcomeStims[choice - 1].draw()  # draw chosen option outcome
-                    self.imageStims[1 - (choice - 1)].draw()  # draw other image
+                    self.outcomeStims[choice - 1].draw()  # draw chosen option outcome  # TODO: broken if stim1pos is right. should not use choice but response
+                    self.imageStims[1 - (choice - 1)].draw()  # draw other image  # TODO: broken if stim1pos is right. should not use choice but response
                 else:
                     [
                         imageStim.draw() for imageStim in self.imageStims
@@ -114,7 +117,7 @@ class Trial(object):
                     f"`feedback` must be one of ['complete', 'partial', 'none'], but is '{self.feedback}'."
                 )
             self.win.flip()
-            core.wait(1)
+            core.wait(1) # TODO: move to exp_info
 
     def log(self):
         ## Log information

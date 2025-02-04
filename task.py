@@ -51,7 +51,6 @@ if __name__ == "__main__":
     rect_height = 0.2
     pos_left = -0.25
     pos_right = +0.25
-
     outcome_color = "limegreen"
 
     ## Screen
@@ -72,6 +71,13 @@ if __name__ == "__main__":
     button_quit = "escape"
     button_left = "f"
     button_right = "j"
+
+    ### Instruction buttons
+    button_instr_next = "right"
+    button_instr_previous = "left"
+    button_instr_finish = "space"
+    button_instr_skip = "s"
+    button_instr_quit = button_quit
 
     ## Misc.
     __version__ = 0.1  # because I pretend to know how to make software
@@ -201,14 +207,17 @@ if __name__ == "__main__":
     # Display instructions
     ## Load instruction images
     learning_instr_slides = [
-        ImageSlide(
+        TextSlide(
             win=win,
-            image=os.path.join(
-                "instructions",
-                "learning-phase",
-                f"rl-context-task_instructions_learning-phase.00{i}.png",
+            text=(
+                f"Instructions: Learning Phase\n"
+                + f"Slide {i}/3 text.\n\n"
+                + f"({button_instr_previous.capitalize()}) Previous - "
+                + f"({button_instr_next.capitalize()}) Next - "
+                + f"({button_instr_skip.capitalize()}) Skip - "
+                + f"({button_instr_finish.capitalize()}) Continue with task"
             ),
-            size=screen_size,
+            height=text_height,
         )
         for i in [1, 2, 3]
     ]
@@ -219,7 +228,11 @@ if __name__ == "__main__":
     instruction = SlideShow(
         win=win,
         slides=learning_instr_slides,
-        keys_finish=[start_button],
+        keys_finish=[button_instr_finish],
+        keys_previous=[button_instr_previous],
+        keys_next=[button_instr_next],
+        keys_quit=[button_quit],
+        keys_skip=[button_instr_skip],
     )
     response = instruction.run()
 

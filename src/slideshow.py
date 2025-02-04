@@ -14,7 +14,7 @@ class SlideShow(object):
         start_idx=0,
         timeout=float("inf"),
         keys_next=["right"],
-        keys_back=["left"],
+        keys_previous=["left"],
         keys_quit=["q", "escape"],
         keys_skip=["s"],
         keys_finish=["space"],
@@ -25,13 +25,13 @@ class SlideShow(object):
         self.slides = slides
         self.start_idx = start_idx
         self.keys_next = keys_next
-        self.keys_back = keys_back
+        self.keys_previous = keys_previous
         self.keys_quit = keys_quit
         self.keys_skip = keys_skip
         if keys_finish is None:
             keys_finish = keys_next
         self.keys_finish = keys_finish
-        self.key_list = keys_next + keys_back + keys_quit + keys_skip + keys_finish
+        self.key_list = keys_next + keys_previous + keys_quit + keys_skip + keys_finish
         self.timeout = timeout
 
     def run(self):
@@ -48,19 +48,18 @@ class SlideShow(object):
                 # If at the last slide, check for finishing keys
                 elif (key in self.keys_finish) and (position == len(self.slides) - 1):
                     return key
-                # Skip to end
-                elif key in self.keys_skip:
+                # Skip to end if skip key or finish key was pressed
+                elif key in self.keys_skip + self.keys_finish:
                     position = len(self.slides) - 1
-                elif key in self.keys_back:
+                # Go back to previous slide (but never before first)
+                elif key in self.keys_previous:
                     position = np.max([0, position - 1])
+                # Advance to next slide (but never beyond last)
                 elif key in self.keys_next:
-                    position += 1
-                    if position > len(self.slides) - 1:
-                        break
-            else:
-                position += 1
-                if position > len(self.slides) - 1:
-                    return self.keys_finish[0]
+                    position = np.min([len(self.slides) - 1, position + 1])
+                else:
+                    # ignore other keys
+                    pass
 
 
 class TextSlide(object):
