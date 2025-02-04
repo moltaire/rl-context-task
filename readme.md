@@ -4,32 +4,6 @@
 
 The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and described in Bavard et al. (2021; Exp. 7).
 
-## Todo
-
-- [ ] Test random icon mapping with full logfile
-- [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
-- [ ] End screen message can be SlideShow, too
-- [ ] Fix ImageSlide instructions
-- [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
-- [x] ~~Include intermediate points tally~~
-- [x] ~~Ensure all data are recorded~~
-- [x] ~~Keep track of rewards over trials (for each phase)~~
-- [x] ~~Check if image size is specified properly~~
-- [x] ~~Specify text color~~
-- [x] ~~Make trials look nicer: Include background and feedback rectangles~~
-- [x] ~~Make counterfactual outcome have different color~~
-- [x] ~~Implement explicit phase~~
-- [x] ~~Record all data (ideally, just include all condition data)~~
-- [x] ~~Is feedback an option in the explicit phase?~~
-- [x] ~~Refactor code to reduce duplication across phases~~
-- [x] ~~Prepare serial port triggers (via `exp_info`?)~~
-- [x] ~~Implement ITI~~
-- [x] ~~Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)~~
-- [x] ~~Implement random assignment of icons to choice options~~
-- [x] ~~Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")~~
-- [x] ~~Fix instruction slideshow~~
-- [x] ~~Implement left/right shuffle (currently called `stim1pos`)~~
-
 ## Details
 
 ### Conditions
@@ -74,3 +48,29 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 - Bavard, S., Rustichini, A., & Palminteri, S. (2021). Two sides of the same coin: Beneficial and detrimental consequences of range adaptation in human reinforcement learning. Science Advances, 7(14), eabe0340. https://doi.org/10.1126/sciadv.abe0340
 - Gueguen, M. C. M., Anlló, H., Bonagura, D., Kong, J., Hafezi, S., Palminteri, S., & Konova, A. B. (2024). Recent Opioid Use Impedes Range Adaptation in Reinforcement Learning in Human Addiction. Biological Psychiatry, 95(10), 974–984. https://doi.org/10.1016/j.biopsych.2023.12.005
+
+## Todo
+
+- [ ] Test random icon mapping with full logfile
+- [ ] Double check temporal arrangement options. I think there should also be randomization if this is "blocked".
+- [ ] End screen message can be SlideShow, too
+- [ ] Fix ImageSlide instructions
+- [x] ~~Remove unnecessary "exp_info" in main script. only necessary within functions~~
+- [x] ~~Include intermediate points tally~~
+- [x] ~~Ensure all data are recorded~~
+- [x] ~~Keep track of rewards over trials (for each phase)~~
+- [x] ~~Check if image size is specified properly~~
+- [x] ~~Specify text color~~
+- [x] ~~Make trials look nicer: Include background and feedback rectangles~~
+- [x] ~~Make counterfactual outcome have different color~~
+- [x] ~~Implement explicit phase~~
+- [x] ~~Record all data (ideally, just include all condition data)~~
+- [x] ~~Is feedback an option in the explicit phase?~~
+- [x] ~~Refactor code to reduce duplication across phases~~
+- [x] ~~Prepare serial port triggers (via `exp_info`?)~~
+- [x] ~~Implement ITI~~
+- [x] ~~Move timing variables into `exp_info` (currently hardcoded in `trial.run()`)~~
+- [x] ~~Implement random assignment of icons to choice options~~
+- [x] ~~Implement temporal arrangement (`temporal_arrangement`; "blocked" vs. "interleaved")~~
+- [x] ~~Fix instruction slideshow~~
+- [x] ~~Implement left/right shuffle (currently called `stim1pos`)~~
