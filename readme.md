@@ -37,6 +37,23 @@ The repository replicates the task described in Gueguen et al. (2024) in PsychoP
 Conditions (i.e., trial information) is specified in a  `stim/conditions.csv`.  
 Note that the task currently does not automatically create rewards and manage reward probabilities. All of this work and logic needs to be provided in the `conditions.csv` file for now. While this is a bit more tedious, it allows for a great level of control over what is shown. In the future, a script creating the `conditions.csv` file can be used to implement different task variants.
 
+The conditions-file should have the following columns:
+- `phase`: This specifies the task phase. Accepted values are:
+  - `training`: Trials in this phase don't count towards total points tally and can be repeated up to `training_n_repeats_max` times. They use a separate set of symbols (identified by `symbol1` and `symbol2` values - see below - starting with `"T"`)
+  - `learning`: Trials in this phase count towards total points tally. They use `symbol` values `"A"`, `"B"`, etc.
+  - `transfer`: Technically, can be identical to the `learning` phase, but will accept a different set of instructions, and, for example, different symbol pairings or `feedback` conditions (see below)
+  - `explicit`: In this phase, no symbols are shown. Instead `probability` and `outcome` are shown explicitly for each option. 
+- `block`: This allows for splitting phases into blocks. Currently, if `temporal_arrangement` is set to `"interleaved"`, trials within each block are ordered randomly. Block values can re-start within every `phase`.
+- `trial_id`: A running ID for trials. They are written into the data, they're not used for anything else.
+- `symbol1`, `symbol2`: These specify the symbols shown for each trial. Training symbols are denoted with `T` (e.g., `T1`). Task symbols are denoted with uppercase letters `A`, `B`, etc. Note, that the task will map different symbols (i.e., image files) to these symbol IDs for each run.
+- `option1pos`: Denotes the position (`left` or `right`) of option 1. Option 2 will take the other position.
+- `feedback`: Sets the feedback condition. This lets you change behavior in `transfer` and `explicit` phases. Accepted values are:
+  - `complete`: Outcomes of both options (chosen and unchosen) are shown.
+  - `partial`: Outcome of the chosen option is shown.
+  - `none`: No outcomes are shown.
+- `outcome1`, `outcome2`: Outcomes of the two options in this trial. With these values, you implicitly determine the options' reward probabilities.
+- `probability1`, `probability2`: Only used in the `explicit` phase to display reward probabilities of the two options explicitly. These values are for display only, the actual outcomes must be defined in `outcome1` and `outcome2`.
+
 ### Addtional Task Settings
 
 Additional task settings (e.g., timing variables, colors, etc.) can be set in `task.py` in the "Experiment Settings" section.
