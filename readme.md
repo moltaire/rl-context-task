@@ -54,7 +54,6 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Make timing physiology compatible: Allow for fixed (choice+feedback) duration. In this case, what happens to missed responses?
 - [ ] Include serial port triggers
 - [ ] What if we want to skip phases? problems: RNG, points counting.
 - [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
@@ -63,6 +62,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] check if we can read the settings.json for a rerun
+- [x] ~~Make timing physiology compatible: Allow for fixed (choice+feedback) duration. In this case, what happens to missed responses?~~
 - [x] ~~see if we can record screen resolution into data or experiment_settings~~
 - [x] ~~variable ITIs~~
 - [x] ~~debriefing slides should be slides not slideshow~~
