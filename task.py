@@ -123,8 +123,8 @@ if __name__ == "__main__":
     fb_rect_linecolor = "black"
 
     # Screen
-    screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
     fullscreen = True
+    screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
     monitor = "testMonitor"  # name of the monitor configuration used (see PsychoPy monitor settings)
 
     # Logfile
@@ -192,6 +192,9 @@ if __name__ == "__main__":
         color=background_color,
     )
     win.mouseVisible = False
+
+    if fullscreen:
+        screen_size = win.monitor.getSizePix()
 
     ############################
     # ===== Instructions ===== #
@@ -352,6 +355,7 @@ if __name__ == "__main__":
     exp_info["rect_height"] = rect_height
     exp_info["pos_left"] = pos_left
     exp_info["pos_right"] = pos_right
+    exp_info["screen_size"] = screen_size
 
     ## Experiment Flow
     exp_info["temporal_arrangement"] = temporal_arrangement
