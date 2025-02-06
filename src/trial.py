@@ -77,6 +77,12 @@ class Trial(object):
                 f"`option1pos` must be 'left' or 'right' (is '{self.trial_info['option1pos']}')."
             )
 
+        # Compute trial ITI
+        self.iti = np.random.uniform(
+            exp_info["duration_iti"] - exp_info["duration_iti_jitter"] / 2,
+            exp_info["duration_iti"] + exp_info["duration_iti_jitter"] / 2,
+        )
+
     def run(self):
 
         # Stimulus phase
@@ -229,12 +235,15 @@ class Trial(object):
 
         # Show ITI
         self.win.flip()
-        core.wait(self.exp_info["duration_iti"])
+        core.wait(self.iti)
 
     def log(self):
         # Add subject and session information
         self.trial_info["subject"] = self.exp_info["Subject"]
         self.trial_info["session"] = self.exp_info["Session"]
+
+        # Add trial ITI
+        self.trial_info["iti"] = self.iti
 
         ## Copy all information from trial_info
         for var, val in self.trial_info.items():

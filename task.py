@@ -90,6 +90,7 @@ if __name__ == "__main__":
     duration_choice = 0.5  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
     duration_outcome = 1.0  # time for the outcome to be shown (seconds)
     duration_iti = 0.2  # inter trial interval (seconds)
+    duration_iti_jitter = 0  # random jitter around `duration_iti`. ITIs will be distributed normally between duration_iti ± iti_jitter / 2
     duration_first_trial_blank = 1  # a blank screen after instructions, before the first trial of each block phase
 
     # Visual stim settings
@@ -337,6 +338,7 @@ if __name__ == "__main__":
     exp_info["duration_choice"] = duration_choice
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
+    exp_info["duration_iti_jitter"] = duration_iti_jitter
     exp_info["duration_first_trial_blank"] = duration_first_trial_blank
 
     ## Visuals
