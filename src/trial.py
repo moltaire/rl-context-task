@@ -79,8 +79,8 @@ class Trial(object):
 
         # Compute trial ITI
         self.iti = np.random.uniform(
-            exp_info["duration_iti"] - exp_info["duration_iti_jitter"] / 2,
-            exp_info["duration_iti"] + exp_info["duration_iti_jitter"] / 2,
+            self.exp_info["duration_iti"] - self.exp_info["duration_iti_jitter"] / 2,
+            self.exp_info["duration_iti"] + self.exp_info["duration_iti_jitter"] / 2,
         )
 
     def run(self):
