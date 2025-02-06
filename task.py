@@ -136,6 +136,10 @@ if __name__ == "__main__":
     serial_port = None  # e.g., None if not in use
     # TODO: Include this. # # # # # # # # # # # # #
 
+    # PLACEHOLDER FOR EYE-TRACKER SETUP # # # # # #
+    eyetracker = None  # e.g., None if not in use
+    # TODO: Include this. # # # # # # # # # # # # #
+
     ##############################
     # ===== Experiment GUI ===== #
     ##############################
@@ -277,21 +281,18 @@ if __name__ == "__main__":
     ]
 
     ## Debriefing
-    debriefing = SlideShow(
-        win=win,
-        slides=[
-            TextSlide(
-                win=win,
-                text=(
-                    f"Debriefing\n\n"
-                    + f"Ciao Kakao!\n"
-                    + f"Mit '{button_instr_finish.capitalize()}' beenden Sie das Experiment."
-                ),
-                height=text_height,
-                color=text_color,
-            )
-        ],
-    )
+    debriefing_slides = [
+        TextSlide(
+            win=win,
+            text=(
+                f"Debriefing\n\n"
+                + f"Ciao Kakao!\n"
+                + f"Mit '{button_instr_finish.capitalize()}' beenden Sie das Experiment."
+            ),
+            height=text_height,
+            color=text_color,
+        )
+    ]
 
     #########################################################################################################
     ## FROM THIS POINT ON, THERE BE DRAGONS. ONLY GO THERE IF YOU KNOW WHAT YOU'RE DOING AND HAVE A BACKUP ##
@@ -379,6 +380,9 @@ if __name__ == "__main__":
 
     # Also add serial port (after .json dump)
     exp_info["serial_port"] = serial_port
+
+    # Add eye tracking object
+    exp_info["eyetracker"] = eyetracker
 
     # Set up experiment object
     exp = data.ExperimentHandler(
@@ -504,7 +508,6 @@ if __name__ == "__main__":
         - shows instructions
         - runs trials (with optional block dividers)
         - optionally shows points tally after phase is done
-
 
         Args:
             phase (str): "training", "learning", "transfer", or "explicit"
@@ -708,7 +711,15 @@ if __name__ == "__main__":
     # ------------------------------ #
     # End of experiment / Debriefing #
     # ------------------------------ #
-    debriefing.run()
+    SlideShow(
+        win=win,
+        slides=debriefing_slides,
+        keys_finish=[button_instr_finish],
+        keys_previous=[button_instr_previous],
+        keys_next=[button_instr_next],
+        keys_quit=[button_quit],
+        keys_skip=[button_instr_skip],
+    ).run()
 
     # Print total points earned to console
     total_score_string = f"$$$ Total points earned: {exp_info['total_reward']} Pts. $$$"
