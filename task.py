@@ -147,12 +147,14 @@ if __name__ == "__main__":
     # Try to read experiment settings from a previous run
     try:
         exp_info = fromFile("lastRunSettings.pickle")
+        exp_info["Stimulus-Set"] = ["Set 1", "Set 2"]
     # If there is none, then we use a default parameter set
     except:
         exp_info = {
             "Subject": "",
             "Experimenter": "",
             "Session": "",
+            "Stimulus-Set": ["Set 1", "Set 2"],
         }
     # Add current time
     exp_info["Date"] = data.getDateStr(format="%Y%m%d")
@@ -309,7 +311,7 @@ if __name__ == "__main__":
     print(
         f"Assuming {n_symbols_training} training symbols and {n_symbols_task} task symbols."
     )
-    
+
     symbol_ids = ascii_uppercase[:n_symbols_task]
     image_names = [f"{i + 1}.png" for i in range(n_symbols_task + n_symbols_training)]
     np.random.shuffle(image_names)  # shuffle in place
@@ -392,13 +394,13 @@ if __name__ == "__main__":
     ## Image files are just placeholder, will be replaced in `trial.prepare()`
     image_left = visual.ImageStim(
         win,
-        image=join("stim", "images", "1.png"),
+        image=join("stim", "images", str(exp_info["Stimulus-Set"]), "1.png"),
         pos=(pos_left, 0),
         size=(symbol_width, symbol_height),
     )
     image_right = visual.ImageStim(
         win,
-        image=join("stim", "images", "2.png"),
+        image=join("stim", "images", str(exp_info["Stimulus-Set"]), "2.png"),
         pos=(pos_right, 0),
         size=(symbol_width, symbol_height),
     )
@@ -619,7 +621,7 @@ if __name__ == "__main__":
     # This phase has a bit more code than the others to allow for it to be repeated.
 
     n_repeats = 0
-    repeat_training = False # set to False to skip training
+    repeat_training = True  # set to False to skip training
     while repeat_training and n_repeats <= training_n_repeats_max:
         run_phase(
             phase="training",

@@ -59,6 +59,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Include serial port triggers
 - [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
+- [x] ~~Add support for multiple stimulus sets (e.g., to use for different visits)~~
 - [x] ~~Check if trials are randomized within blocks if temporal_arrangemend == 'blocked'~~
 - [x] ~~Double check temporal arrangement options. I think there should also be randomization if this is "blocked".~~
 - [x] ~~fix bug with random seed. currently, changing it in the GUI doesnt do anything~~
