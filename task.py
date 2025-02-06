@@ -84,14 +84,26 @@ if __name__ == "__main__":
 
     # Timing
     ## Timing variables are provided in seconds
-    duration_timeout = float(
-        "inf"
-    )  # timeout duration, float("inf") = self paced, used by Bavard & Gueguen
+    duration_timeout = 5.0  # float("inf")  # timeout duration, float("inf") = self paced, used by Bavard & Gueguen
     duration_choice = 0.5  # time for choice to be indicated (black border around chosen symbol; 500 ms used by Bavard)
     duration_outcome = 1.0  # time for the outcome to be shown (seconds)
     duration_iti = 0.2  # inter trial interval (seconds)
     duration_iti_jitter = 0  # random jitter around `duration_iti`. ITIs will be distributed normally between duration_iti ± iti_jitter / 2
     duration_first_trial_blank = 1  # a blank screen after instructions, before the first trial of each block phase
+
+    ## This next setting can be used to fix the total time used for the two phases
+    ## - `response` (participant deliberates) and
+    ## - `choice` (participant has chosen and their chosen option is highlighted)
+    ## Effectively, if `duration_fixed_response` = True,
+    ## it fills the remainer of `duration_timeout` with the `choice` phase.
+    ## This might be useful for studies using physiological measures that need
+    ## constant trial duration and stimulus events decoupled from response times.
+    ## Note, that this cannot work with `duration_timeout` set to infinity.
+    duration_fixed_response = True  # [True, False]
+    if duration_fixed_response:
+        assert duration_timeout != float(
+            "inf"
+        ), "If using `duration_fixed_response`, you must use a finite `duration_timeout`."
 
     # Visual stim settings
     ## General background and text
@@ -342,6 +354,7 @@ if __name__ == "__main__":
     exp_info["duration_outcome"] = duration_outcome
     exp_info["duration_iti"] = duration_iti
     exp_info["duration_iti_jitter"] = duration_iti_jitter
+    exp_info["duration_fixed_response"] = duration_fixed_response
     exp_info["duration_first_trial_blank"] = duration_first_trial_blank
 
     ## Visuals

@@ -103,7 +103,8 @@ class Trial(object):
         #     self.exp_info["serial_port"].send_trigger(f"trial_{self.trial_id}_stimuli-on")
 
         # Choice phase
-        ## When a choice was made, show the feedback frame for 500 ms
+        ## When a choice was made, show the feedback frame for `duration_choice`
+        ## or, if `duration_fixed_response == True` for `duration_timeout` - rt
 
         keyEvents = event.waitKeys(
             keyList=[
@@ -115,7 +116,7 @@ class Trial(object):
             timeStamped=rt_start,
         )
 
-        ## decode first response
+        ## Decode response
         if keyEvents is not None:
             # participant pressed a button
             if keyEvents[0][0] in [self.exp_info["buttons"]["button_quit"]]:
@@ -180,7 +181,10 @@ class Trial(object):
                 response == "right"
             ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
             self.win.flip()
-            core.wait(self.exp_info["duration_choice"])
+            if not self.exp_info["duration_fixed_response"]:
+                core.wait(self.exp_info["duration_choice"])
+            else:
+                core.wait(self.exp_info["duration_timeout"] - rt)
 
             ## Show outcome(s) if feedback != "none"
             if not self.trial_info["feedback"] == "none":
@@ -234,6 +238,8 @@ class Trial(object):
             self.cumulative_reward = self.exp_info["total_reward"]
 
         # Show ITI
+        ## Trial-specific ITI (in case of `duration_iti_jitter != 0`)
+        ## is computed in self.prepare()
         self.win.flip()
         core.wait(self.iti)
 
