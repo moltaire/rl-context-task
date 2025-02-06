@@ -2,7 +2,7 @@
 
 # Context-Dependent Reinforcement-Learning Task
 
-The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. The task is also used and described in Bavard et al. (2021; Exp. 7).
+The repository replicates the task described in Gueguen et al. (2024) in PsychoPy. Different variants of this task are also used and described in Bavard et al. (2021).
 
 ## Details
 
@@ -15,19 +15,19 @@ Note that the task currently does not automatically create rewards and manage re
 
 The conditions-file should have the following columns:
 - `phase`: This specifies the task phase. Accepted values are:
-  - `training`: Trials in this phase don't count towards total points tally and can be repeated up to `training_n_repeats_max` times. They use a separate set of symbols (identified by `symbol1` and `symbol2` values - see below - starting with `"T"`)
-  - `learning`: Trials in this phase count towards total points tally. They use `symbol` values `"A"`, `"B"`, etc.
-  - `transfer`: Technically, can be identical to the `learning` phase, but will accept a different set of instructions, and, for example, different symbol pairings or `feedback` conditions (see below)
-  - `explicit`: In this phase, no symbols are shown. Instead `probability` and `outcome` are shown explicitly for each option. 
-- `block`: This allows for splitting phases into blocks. If `show_block_dividers` is set to `True`, break screens will be included. Block values can re-start within every `phase`.
+  - `"training"`: Trials in this phase don't count towards total points tally and can be repeated up to `training_n_repeats_max` times. They use a separate set of symbols (identified by `symbol1` and `symbol2` values - see below - starting with `"T"`)
+  - `"learning"`: Trials in this phase count towards total points tally. They use `symbol` values `"A"`, `"B"`, etc.
+  - `"transfer"`: Technically, can be identical to the `learning` phase, but will accept a different set of instructions, and, for example, different symbol pairings or `feedback` conditions (see below)
+  - `"explicit"`: In this phase, no symbols are shown. Instead `probability` and `outcome` are shown explicitly for each option. 
+- `block`: This allows for splitting phases into blocks. If `show_block_dividers` is set to `True`, break screens will be included. Block values can re-start within every `phase`. Note that the `temporal_arrangement` setting that shuffles trials or trial blocks (based on `trial_type`, see below) applies within each block.
 - `trial_id`: A running ID for trials. They are written into the data, they're not used for anything else.
 - `trial_type`: This variable is used to determine the `temporal_arrangement` setting. Within each block, if `temporal_arrangement` is set to `"interleaved"`, all trial types are shuffled randomly. In contrast, if `temporal_arrangement` is set to `"blocked"`, trials with the same `trial_type` remain chunked together, but the chunk order is shuffled.
 - `symbol1`, `symbol2`: These specify the symbols shown for each trial. Training symbols are denoted with `T` (e.g., `T1`). Task symbols are denoted with uppercase letters `A`, `B`, etc. Note, that the task will map different symbols (i.e., image files) to these symbol IDs for each run.
 - `option1pos`: Denotes the position (`left` or `right`) of option 1. Option 2 will take the other position.
 - `feedback`: Sets the feedback condition. This lets you change behavior in `transfer` and `explicit` phases. Accepted values are:
-  - `complete`: Outcomes of both options (chosen and unchosen) are shown.
-  - `partial`: Outcome of the chosen option is shown.
-  - `none`: No outcomes are shown.
+  - `"complete"`: Outcomes of both options (chosen and unchosen) are shown.
+  - `"partial"`: Outcome of the chosen option is shown.
+  - `"none"`: No outcomes are shown.
 - `outcome1`, `outcome2`: Outcomes of the two options in this trial. With these values, you implicitly determine the options' reward probabilities.
 - `probability1`, `probability2`: Only used in the `explicit` phase to display reward probabilities of the two options explicitly. These values are for display only, the actual outcomes must be defined in `outcome1` and `outcome2`.
 
@@ -59,6 +59,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Include serial port triggers
 - [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
+- [x] ~~Check if trials are randomized within blocks if temporal_arrangemend == 'blocked'~~
 - [x] ~~Double check temporal arrangement options. I think there should also be randomization if this is "blocked".~~
 - [x] ~~fix bug with random seed. currently, changing it in the GUI doesnt do anything~~
 - [x] ~~Fix ImageSlide instructions~~

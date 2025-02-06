@@ -566,7 +566,7 @@ if __name__ == "__main__":
                 elif exp_info["temporal_arrangement"] == "blocked":
                     # split by trial_type
                     chunks = [
-                        trials_of_type
+                        trials_of_type.sample(frac=1)  # randomize within each chunk
                         for _, trials_of_type in trials_block.groupby("trial_type")
                     ]
                     # shuffle chunks
