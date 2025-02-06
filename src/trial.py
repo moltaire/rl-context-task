@@ -54,7 +54,7 @@ class Trial(object):
                 [self.trial_info["outcome1"], self.trial_info["outcome2"]],
             ):
                 explicitStim.setText(
-                    f"{(probability * 100):.0f}%\n\n{outcome:.0f} Pkt."
+                    f"{(float(probability) * 100):.0f}%\n\n{float(outcome):.0f} Pkt."
                 )
                 # log that no images were shown
                 self.trial_info["image1"] = np.nan
