@@ -65,20 +65,6 @@ if __name__ == "__main__":
     ## Trial information will be loaded from a separate .csv file
     conditions = pd.read_csv(os.path.join("stim", "conditions.csv"))
 
-    ## Get the number of symbols needed
-    ## After a random number generator seed has been set, there will be a
-    ## participant-specific mapping of symbols (e.g., 1.png) to IDs (e.g., A)
-    ## Don't change unless you're really sure about it.
-    n_symbols_training = np.unique(
-        conditions.query("phase == 'training'")[["symbol1", "symbol2"]].values.ravel()
-    ).size
-    n_symbols_task = np.unique(
-        conditions.query("phase == 'learning'")[["symbol1", "symbol2"]].values.ravel()
-    ).size
-    print(
-        f"Assuming {n_symbols_training} training symbols and {n_symbols_task} task symbols."
-    )
-
     # Buttons
     ## (any keyboard button code will do for these)
     ## Responses
@@ -310,6 +296,20 @@ if __name__ == "__main__":
     #########################################################################################################
 
     # Make random mapping of symbol IDs (ABCDEFGH and training ones) to images (1,2,3,4,5.png)
+    ## Get the number of symbols needed
+    ## After a random number generator seed has been set, there will be a
+    ## participant-specific mapping of symbols (e.g., 1.png) to IDs (e.g., A)
+    ## Don't change unless you're really sure about it.
+    n_symbols_training = np.unique(
+        conditions.query("phase == 'training'")[["symbol1", "symbol2"]].values.ravel()
+    ).size
+    n_symbols_task = np.unique(
+        conditions.query("phase == 'learning'")[["symbol1", "symbol2"]].values.ravel()
+    ).size
+    print(
+        f"Assuming {n_symbols_training} training symbols and {n_symbols_task} task symbols."
+    )
+    
     symbol_ids = ascii_uppercase[:n_symbols_task]
     image_names = [f"{i + 1}.png" for i in range(n_symbols_task + n_symbols_training)]
     np.random.shuffle(image_names)  # shuffle in place
