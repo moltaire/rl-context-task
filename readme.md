@@ -60,6 +60,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Double triple check data, responses, etc.
 - [ ] Test random icon mapping with full logfile
 - [ ] Document output file
+- [ ] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] check if we can read the settings.json for a rerun
 - [x] ~~Make timing physiology compatible: Allow for fixed (choice+feedback) duration. In this case, what happens to missed responses?~~
