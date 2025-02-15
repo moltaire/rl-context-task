@@ -40,13 +40,6 @@ class Trial(object):
                 imageStim.setImage(imagePath)
                 self.trial_info[f"image{i+1}"] = imagePath
 
-            # Set up outcomes
-            for outcomeStim, outcome in zip(
-                self.outcomeStims,
-                (self.trial_info["outcome1"], self.trial_info["outcome2"]),
-            ):
-                outcomeStim.setText(outcome)
-
         else:  # Explicit phase: Set up text stimuli
             for explicitStim, probability, outcome in zip(
                 self.explicitStims,
@@ -59,6 +52,33 @@ class Trial(object):
                 # log that no images were shown
                 self.trial_info["image1"] = np.nan
                 self.trial_info["image2"] = np.nan
+
+        # Prepare outcomes
+        if self.trial_info["feedback"] == "skip":
+            pass
+        else:
+            if self.trial_info["feedback"] in ["complete", "partial"]:
+                ## Content, i.e., reward information
+                outcomeContent = (
+                    self.trial_info["outcome1"],
+                    self.trial_info["outcome2"],
+                )
+            elif self.trial_info["feedback"] == "none":
+                ## show question marks for no feedback (for partial, the unchosen option's content will be updated after choice)
+                outcomeContent = ("?", "?")
+            else:
+                raise ValueError(
+                    f"`feedback` must be one of ['complete', 'partial', 'none', 'skip'], but is '{self.trial_info['feedback']}'."
+                )
+
+            # Initialize outcome content and color
+            for outcomeStim, outcome in zip(
+                self.outcomeStims,
+                outcomeContent,
+            ):
+                outcomeStim.setText(outcome)
+                # also set color to counterfactual color
+                outcomeStim.color = self.exp_info["outcome_color_counterfactual"]
 
         # Set positions
         if self.trial_info["option1pos"] == "left":
@@ -163,6 +183,7 @@ class Trial(object):
         self.response = response
 
         ## Show choice frame (if not timed out)
+        ### TODO: Research casino animation during this phase. Simple way could be pulsing opacity
         if not timed_out:
 
             # Draw background rectangles
@@ -186,8 +207,8 @@ class Trial(object):
             else:
                 core.wait(self.exp_info["duration_timeout"] - rt)
 
-            ## Show outcome(s) if feedback != "none"
-            if not self.trial_info["feedback"] == "none":
+            ## Show outcome(s) if feedback != "skip"
+            if not self.trial_info["feedback"] == "skip":
                 # draw background rectangles
                 [bg_rect.draw() for bg_rect in self.bg_rects]
 
@@ -196,31 +217,22 @@ class Trial(object):
                     response == "right"
                 ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
 
-                # set colors of outcomes
-                self.outcomeStims[choice - 1].color = self.exp_info["outcome_color"]
-                self.outcomeStims[1 - (choice - 1)].color = self.exp_info[
-                    "outcome_color_counterfactual"
-                ]
+                # For partial or complete feedback, update chosen option outcome's color
+                if self.trial_info["feedback"] in ["complete", "partial"]:
+                    # chosen outcome color
+                    self.outcomeStims[choice - 1].color = self.exp_info["outcome_color"]
 
-                if self.trial_info["feedback"] == "complete":
-                    [outcomeStim.draw() for outcomeStim in self.outcomeStims]
-                elif self.trial_info["feedback"] == "partial":
-                    self.outcomeStims[choice - 1].draw()  # draw chosen option outcome
-                    if self.trial_info["phase"] != "explicit":
-                        self.imageStims[
-                            1 - (choice - 1)
-                        ].draw()  # draw other option image
-                    else:  # explicit
-                        self.explicitStims[
-                            1 - (choice - 1)
-                        ].draw()  # draw other option image
-                else:
-                    raise ValueError(
-                        f"`feedback` must be one of ['complete', 'partial', 'none'], but is '{self.trial_info['feedback']}'."
-                    )
+                # For partial feedback, occlude unchosen outcome
+                if self.trial_info["feedback"] == "partial":
+                    self.outcomeStims[1 - (choice - 1)].setText("?")
+
+                # Draw the outcomes
+                [outcomeStim.draw() for outcomeStim in self.outcomeStims]
+
+                # Show everything
                 self.win.flip()
                 core.wait(self.exp_info["duration_outcome"])
-            else:  # feedback == "none"
+            else:  # feedback == "skip"
                 pass
         else:  # timed out
             pass  # do nothing?

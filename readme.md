@@ -54,15 +54,18 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Include serial port triggers
-- [ ] What if we want to skip phases? problems: RNG, points counting.
-- [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
-- [ ] Double triple check data, responses, etc.
-- [ ] Test random icon mapping with full logfile
-- [ ] Document output file
+- [ ] Implement actual stochastic outcomes that use `probability` columns of the conditions file
+- [ ] Clarify: Is feedback ("?") shown if no response given?
 - [ ] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
+- [ ] Include serial port triggers
+- [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
+- [ ] Perform thorough check of the task. Is everything on time? Is everything shown properly? Is everything recorded? Does the random stimulus mapping work as expected?
+- [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
-- [ ] check if we can read the settings.json for a rerun
+- [ ] (low priority) What if we want to skip phases? problems: RNG, points counting.
+- [ ] (low priority) Check if we can read the settings.json for a rerun
+- [x] ~~Research casino animation during choice phase: could be done by prerendering a movie for each symbol and showing a movie~~
+- [x] ~~Revise feedback phases. "none" becomes "skip". "partial" and "none" need to show question marks.~~
 - [x] ~~Make timing physiology compatible: Allow for fixed (choice+feedback) duration. In this case, what happens to missed responses?~~
 - [x] ~~see if we can record screen resolution into data or experiment_settings~~
 - [x] ~~variable ITIs~~
