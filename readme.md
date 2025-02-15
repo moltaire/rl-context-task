@@ -26,8 +26,9 @@ The conditions-file should have the following columns:
 - `option1pos`: Denotes the position (`left` or `right`) of option 1. Option 2 will take the other position.
 - `feedback`: Sets the feedback condition. This lets you change behavior in `transfer` and `explicit` phases. Accepted values are:
   - `"complete"`: Outcomes of both options (chosen and unchosen) are shown.
-  - `"partial"`: Outcome of the chosen option is shown.
-  - `"none"`: No outcomes are shown.
+  - `"partial"`: Outcome of the chosen option is shown. Unchosen outcome is shown as "?"
+  - `"none"`: Both outcomes are shown as "?"
+  - `"skip"`: Feedback phase is skipped completely
 - `outcome1`, `outcome2`: Outcomes of the two options in this trial. With these values, you implicitly determine the options' reward probabilities.
 - `probability1`, `probability2`: Only used in the `explicit` phase to display reward probabilities of the two options explicitly. These values are for display only, the actual outcomes must be defined in `outcome1` and `outcome2`.
 
