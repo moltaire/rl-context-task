@@ -29,8 +29,13 @@ The conditions-file should have the following columns:
   - `"partial"`: Outcome of the chosen option is shown. Unchosen outcome is shown as "?"
   - `"none"`: Both outcomes are shown as "?"
   - `"skip"`: Feedback phase is skipped completely
-- `outcome1`, `outcome2`: Outcomes of the two options in this trial. With these values, you implicitly determine the options' reward probabilities.
-- `probability1`, `probability2`: Only used in the `explicit` phase to display reward probabilities of the two options explicitly. These values are for display only, the actual outcomes must be defined in `outcome1` and `outcome2`.
+- `outcome_randomness`: Allows you to determine if option outcomes are realized truly random, according to specified probabilities in each trial (see below), or pseudorandomly, where you predefine the outcomes in the `outcome` columns (see below).
+  - `"random"`: Each option's realized outcome will be drawn truly randomly. For example, the outcome in column `outcome1` will be realized with probability given in the `probability1` column, or 0 otherwise.
+  - `"pseudorandom"`: Each option's realized outcome in this trial is predefined in its `outcome` column.
+- `outcome1`, `outcome2`: Outcomes of the two options in this trial. 
+  - If `outcome_randomness` is `"random"`, these denote the potential outcomes that can be realized with specified probabilities (and 0 otherwise).With these values, you implicitly determine the options' reward probabilities.
+  - If `outcome_randomness` is `"pseudorandom"`, values in these columns are the realized outcomes. Across multiple rows of the conditions file, you can implicitly define the options' outcome probabilities.
+- `probability1`, `probability2`: If `outcome_randomness` is `"random"`, these are the probabilities with which outcomes are realized in the trial. In the `explicit` phase they are also used to display reward probabilities of the two options explicitly. If `outcome_randomness` is `"pseudorandom"`, the probabilities do not influence realized outcomes in each trial.
 
 ### Addtional Task Settings
 
@@ -55,7 +60,6 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Implement actual stochastic outcomes that use `probability` columns of the conditions file
 - [ ] Clarify: Is feedback ("?") shown if no response given?
 - [ ] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
 - [ ] Include serial port triggers
@@ -65,6 +69,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] (low priority) What if we want to skip phases? problems: RNG, points counting.
 - [ ] (low priority) Check if we can read the settings.json for a rerun
+- [x] ~~Implement actual stochastic outcomes that use `probability` columns of the conditions file~~
 - [x] ~~Research casino animation during choice phase: could be done by prerendering a movie for each symbol and showing a movie~~
 - [x] ~~Revise feedback phases. "none" becomes "skip". "partial" and "none" need to show question marks.~~
 - [x] ~~Make timing physiology compatible: Allow for fixed (choice+feedback) duration. In this case, what happens to missed responses?~~

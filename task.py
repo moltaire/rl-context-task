@@ -99,7 +99,7 @@ if __name__ == "__main__":
     ## This might be useful for studies using physiological measures that need
     ## constant trial duration and stimulus events decoupled from response times.
     ## Note, that this cannot work with `duration_timeout` set to infinity.
-    duration_fixed_response = True  # [True, False]
+    duration_fixed_response = False  # [True, False]
     if duration_fixed_response:
         assert duration_timeout != float(
             "inf"
@@ -383,15 +383,17 @@ if __name__ == "__main__":
         button_instr_quit=button_instr_quit,
         button_instr_repeat=button_instr_repeat,
     )
-    exp_info["stimuli"] = dict(conditions=conditions.to_dict())
-    exp_info["stimulus_map"] = dict(
-        task_symbol_map, **training_symbol_map
-    )  # combines task- and training symbol map
     exp_info["training_n_repeats_max"] = training_n_repeats_max
     exp_info["show_block_dividers"] = show_block_dividers
     exp_info["show_score_after_phase"] = show_score_after_phase
     exp_info["total_reward"] = 0  # used to track reward
     exp_info["logfile_path"] = logfile_path
+
+    ## Stimuli
+    exp_info["stimuli"] = dict(conditions=conditions.to_dict())
+    exp_info["stimulus_map"] = dict(
+        task_symbol_map, **training_symbol_map
+    )  # combines task- and training symbol map
 
     # Save experiment settings for this run
     with open(f"{logfile_path}_settings.json", "w") as file:

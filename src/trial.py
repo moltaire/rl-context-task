@@ -54,14 +54,45 @@ class Trial(object):
                 self.trial_info["image2"] = np.nan
 
         # Prepare outcomes
+        ## If `outcome_randomness` is "random", we need to draw `realized_outcome`s according to their probabilities.
+        if self.trial_info["outcome_randomness"] == "random":
+            # Check that probability info is given
+            assert isinstance(self.trial_info["probability1"], float) and not np.isnan(
+                self.trial_info["probability1"]
+            ), "If `outcome_randomness` is set to 'random', 'probability' columns in 'conditions.csv' need to be of type float!"
+
+            self.trial_info["realized_outcome1"] = np.random.choice(
+                [self.trial_info["outcome1"], 0],
+                p=[
+                    self.trial_info["probability1"],
+                    1 - self.trial_info["probability1"],
+                ],
+            )
+            self.trial_info["realized_outcome2"] = np.random.choice(
+                [self.trial_info["outcome2"], 0],
+                p=[
+                    self.trial_info["probability2"],
+                    1 - self.trial_info["probability2"],
+                ],
+            )
+        ## Otherwise, they are read from the outcome columns directly
+        elif self.trial_info["outcome_randomness"] == "pseudorandom":
+            self.trial_info["realized_outcome1"] = self.trial_info["outcome1"]
+            self.trial_info["realized_outcome2"] = self.trial_info["outcome2"]
+        else:
+            raise ValueError(
+                f"`outcome_randomness` experiment setting must be one of ['random', 'pseudorandom'], but is '{self.exp_info['outcome_randomness']}'."
+            )
+
+        # Prepare outcome feedback
         if self.trial_info["feedback"] == "skip":
             pass
         else:
             if self.trial_info["feedback"] in ["complete", "partial"]:
                 ## Content, i.e., reward information
                 outcomeContent = (
-                    self.trial_info["outcome1"],
-                    self.trial_info["outcome2"],
+                    self.trial_info["realized_outcome1"],
+                    self.trial_info["realized_outcome2"],
                 )
             elif self.trial_info["feedback"] == "none":
                 ## show question marks for no feedback (for partial, the unchosen option's content will be updated after choice)
@@ -239,9 +270,9 @@ class Trial(object):
 
         # compute reward
         if choice == 1:
-            reward_t = self.trial_info["outcome1"]
+            reward_t = self.trial_info["realized_outcome1"]
         elif choice == 2:
-            reward_t = self.trial_info["outcome2"]
+            reward_t = self.trial_info["realized_outcome2"]
         else:
             reward_t = 0
         self.obtained_reward = reward_t
