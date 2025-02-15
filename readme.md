@@ -65,6 +65,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Include serial port triggers
 - [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
 - [ ] Perform thorough check of the task. Is everything on time? Is everything shown properly? Is everything recorded? Does the random stimulus mapping work as expected?
+- [ ] (Bug): Explicit phase trials with "pseudorandom" mode do not make any sense, because probabilities are shown, but not used. Shown outcomes are always realized.
 - [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] (low priority) What if we want to skip phases? problems: RNG, points counting.
