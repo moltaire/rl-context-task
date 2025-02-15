@@ -131,7 +131,7 @@ class Trial(object):
             elif key_pressed == self.exp_info["buttons"]["button_right"]:
                 response = "right"
             else:
-                raise ValueError(f"An unexpected key was pressed: {key}")
+                raise ValueError(f"An unexpected key was pressed: {key_pressed}")
 
             # decode into choice (1 or 2)
             if self.trial_info["option1pos"] == "left":
