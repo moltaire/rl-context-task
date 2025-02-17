@@ -29,13 +29,12 @@ The conditions-file should have the following columns:
   - `"partial"`: Outcome of the chosen option is shown. Unchosen outcome is shown as "?"
   - `"none"`: Both outcomes are shown as "?"
   - `"skip"`: Feedback phase is skipped completely
-- `outcome_randomness`: Allows you to determine if option outcomes are realized truly random, according to specified probabilities in each trial (see below), or pseudorandomly, where you predefine the outcomes in the `outcome` columns (see below).
-  - `"random"`: Each option's realized outcome will be drawn truly randomly. For example, the outcome in column `outcome1` will be realized with probability given in the `probability1` column, or 0 otherwise.
-  - `"pseudorandom"`: Each option's realized outcome in this trial is predefined in its `outcome` column.
-- `outcome1`, `outcome2`: Outcomes of the two options in this trial. 
-  - If `outcome_randomness` is `"random"`, these denote the potential outcomes that can be realized with specified probabilities (and 0 otherwise).With these values, you implicitly determine the options' reward probabilities.
-  - If `outcome_randomness` is `"pseudorandom"`, values in these columns are the realized outcomes. Across multiple rows of the conditions file, you can implicitly define the options' outcome probabilities.
-- `probability1`, `probability2`: If `outcome_randomness` is `"random"`, these are the probabilities with which outcomes are realized in the trial. In the `explicit` phase they are also used to display reward probabilities of the two options explicitly. If `outcome_randomness` is `"pseudorandom"`, the probabilities do not influence realized outcomes in each trial.
+- `outcome_randomness`: Allows you to determine if option outcomes are realized truly random, according to specified probabilities in each trial (see below), or pseudorandomly, where you predefine the outcomes in the `actual_outcome` columns (see below).
+  - `"random"`: Each option's realized outcome will be drawn truly randomly. For example, the outcome in column `potential_outcome1` will be realized with probability given in the `probability1` column, or 0 otherwise.
+  - `"pseudorandom"`: Each option's realized outcome in this trial is predefined in its `actual_outcome` column.
+- `potential_outcome1`, `potential_outcome2`: Potential outcomes of the two options in this trial. If `outcome_randomness` is `"random"`, outcomes in each trial will be this value with given `probability`, or 0 otherwise. Values in this column are also displayed in `explicit` phase.
+- `actual_outcome1`, `actual_outcome2`: Values in these columns are the realized outcomes. If `outcome_randomness` is `"random"`, you don't need to specify these values, as actual outcomes will be stochastically determined (according to the `probability` values). If `outcome_randomness` is `"pseudorandom"`, you need to specify the actual outcomes of each option in each trial. Across multiple rows of the conditions file, you can implicitly define the options' outcome probabilities.
+- `probability1`, `probability2`: If `outcome_randomness` is `"random"`, these are the probabilities with which outcomes are realized in the trial. In the `explicit` phase they are also used to display reward probabilities of the two options explicitly. If `outcome_randomness` is `"pseudorandom"`, the probabilities do not influence realized outcomes in each trial, but are only used for display in the `explicit` phase.
 
 ### Addtional Task Settings
 
@@ -60,16 +59,16 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Clarify: Is feedback ("?") shown if no response given?
 - [ ] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
 - [ ] Include serial port triggers
 - [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
 - [ ] Perform thorough check of the task. Is everything on time? Is everything shown properly? Is everything recorded? Does the random stimulus mapping work as expected?
-- [ ] (Bug): Explicit phase trials with "pseudorandom" mode do not make any sense, because probabilities are shown, but not used. Shown outcomes are always realized.
 - [ ] Document output file
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] (low priority) What if we want to skip phases? problems: RNG, points counting.
 - [ ] (low priority) Check if we can read the settings.json for a rerun
+- [x] ~~Clarify: Is feedback ("?") shown if no response given? -> No~~
+- [x] ~~(Bug): Explicit phase trials with "pseudorandom" mode do not make any sense, because probabilities are shown, but not used. Shown outcomes are always realized.~~
 - [x] ~~Implement actual stochastic outcomes that use `probability` columns of the conditions file~~
 - [x] ~~Research casino animation during choice phase: could be done by prerendering a movie for each symbol and showing a movie~~
 - [x] ~~Revise feedback phases. "none" becomes "skip". "partial" and "none" need to show question marks.~~
