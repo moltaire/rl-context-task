@@ -122,6 +122,9 @@ if __name__ == "__main__":
     ## Outcome text
     outcome_color = "forestgreen"
     outcome_color_counterfactual = "gray"
+    outcome_text_scale = (
+        2  # how much bigger should the outcomes be than the other text?
+    )
 
     ## Background rectangle
     rect_linewidth = 3  # I think this is pixels?
@@ -131,8 +134,11 @@ if __name__ == "__main__":
     rect_background_color = "white"
 
     ## Feedback rectangle
-    fb_rect_linewidth = 6
+    fb_rect_linewidth = 12
     fb_rect_linecolor = "black"
+
+    ## Animation
+    animation_speed = 0.5  # speed of the flicker, 0 is no animation, I think :)
 
     # Screen
     fullscreen = True
@@ -362,6 +368,7 @@ if __name__ == "__main__":
     exp_info["text_color"] = text_color
     exp_info["outcome_color"] = outcome_color
     exp_info["outcome_color_counterfactual"] = outcome_color_counterfactual
+    exp_info["outcome_text_scale"] = outcome_text_scale
     exp_info["text_height"] = text_height
     exp_info["rect_linewidth"] = rect_linewidth
     exp_info["rect_width"] = rect_width
@@ -369,6 +376,7 @@ if __name__ == "__main__":
     exp_info["pos_left"] = pos_left
     exp_info["pos_right"] = pos_right
     exp_info["screen_size"] = screen_size
+    exp_info["animation_speed"] = animation_speed
 
     ## Experiment Flow
     exp_info["temporal_arrangement"] = temporal_arrangement
@@ -476,14 +484,14 @@ if __name__ == "__main__":
         win,
         text="",
         pos=(pos_left, 0),
-        height=text_height,
+        height=text_height * outcome_text_scale,
         color=outcome_color,
     )
     outcome_right = visual.TextStim(
         win,
         text="",
         pos=(pos_right, 0),
-        height=text_height,
+        height=text_height * outcome_text_scale,
         color=outcome_color,
     )
     outcomes = [outcome_left, outcome_right]

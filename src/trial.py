@@ -1,6 +1,7 @@
 import numpy as np
 from os.path import join
 from psychopy import event, core
+import math
 
 
 class Trial(object):
@@ -224,29 +225,43 @@ class Trial(object):
         self.response = response
 
         ## Show choice frame (if not timed out)
-        ### TODO: Research casino animation during this phase. Simple way could be pulsing opacity
         if not timed_out:
 
-            # Draw background rectangles
-            for rect in self.bg_rects:
-                rect.draw()
-            ### Draw both images
-            if self.trial_info["phase"] != "explicit":
-                for image in self.imageStims:
-                    image.draw()
+            # determine the time to show the choice (and run animation)
+            if self.exp_info["duration_fixed_response"]:
+                duration_choicephase = self.exp_info["duration_timeout"] - rt
             else:
-                for explicit in self.explicitStims:
-                    explicit.draw()
+                duration_choicephase = self.exp_info["duration_choice"]
 
-            ### Draw rectangle of chosen option
-            self.fb_rects[
-                response == "right"
-            ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
-            self.win.flip()
-            if not self.exp_info["duration_fixed_response"]:
-                core.wait(self.exp_info["duration_choice"])
-            else:
-                core.wait(self.exp_info["duration_timeout"] - rt)
+            choicephase_timer = core.CountdownTimer(duration_choicephase)
+            animation_phase = 0
+            while choicephase_timer.getTime() > 0:
+                animation_phase += self.exp_info["animation_speed"]
+                # Opacity changes in cosine curve between 0 and 1, starting with 1
+                opacity = 1 + (math.cos(animation_phase) * 0.5)
+                # Draw background rectangles
+                for rect in self.bg_rects:
+                    rect.draw()
+
+                ### Draw both images
+                if self.trial_info["phase"] != "explicit":
+                    for image in self.imageStims:
+                        # adjust opacity
+                        image.setOpacity(opacity)
+                        # draw
+                        image.draw()
+                else:
+                    for explicit in self.explicitStims:
+                        # adjust opacity
+                        explicit.setOpacity(opacity)
+                        # draw
+                        explicit.draw()
+
+                ### Draw rectangle of chosen option
+                self.fb_rects[
+                    response == "right"
+                ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
+                self.win.flip()
 
             ## Show outcome(s) if feedback != "skip"
             if not self.trial_info["feedback"] == "skip":
