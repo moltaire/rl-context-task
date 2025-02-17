@@ -60,9 +60,10 @@ class Trial(object):
         ## If `outcome_randomness` is "random", we need to draw `actual_outcome`s according to their probabilities.
         if self.trial_info["outcome_randomness"] == "random":
             # Check that probability info is given
-            assert isinstance(self.trial_info["probability1"], float) and not np.isnan(
-                self.trial_info["probability1"]
-            ), "If `outcome_randomness` is set to 'random', 'probability' columns in 'conditions.csv' need to be of type float!"
+            for p in [self.trial_info["probability1"], self.trial_info["probability2"]]:
+                assert isinstance(p, (float, int)) and not np.isnan(
+                    p
+                ), "If `outcome_randomness` is set to 'random', 'probability' columns in 'conditions.csv' need to be of type float!"
 
             self.trial_info["actual_outcome1"] = np.random.choice(
                 [self.trial_info["potential_outcome1"], 0],
@@ -81,9 +82,13 @@ class Trial(object):
         ## Otherwise, they are read from the actual_outcome columns directly
         elif self.trial_info["outcome_randomness"] == "pseudorandom":
             # just check that actual outcomes are provided
-            assert isinstance(self.trial_info["actual_outcome1"], float) and isinstance(
-                self.trial_info["actual_outcome2"], float
-            ), "If `outcome_randomness` is set to 'pseudorandom', you must provide numerical values in `actual_outcome`s!"
+            for o in [
+                self.trial_info["actual_outcome1"],
+                self.trial_info["actual_outcome2"],
+            ]:
+                assert isinstance(o, (float, int)) and not np.isnan(
+                    o
+                ), "If `outcome_randomness` is set to 'pseudorandom', you must provide numerical values in `actual_outcome`s!"
         else:
             raise ValueError(
                 f"`outcome_randomness` experiment setting must be one of ['random', 'pseudorandom'], but is '{self.exp_info['outcome_randomness']}'."
