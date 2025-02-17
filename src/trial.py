@@ -17,6 +17,7 @@ class Trial(object):
         self.fb_rects = visual_elements["fb_rects"]
         self.outcomeStims = visual_elements["outcomes"]
         self.imageStims = visual_elements["images"]
+        self.videoStims = visual_elements["videos"]
         self.explicitStims = visual_elements["explicit"]
 
     def prepare(self):
@@ -40,6 +41,22 @@ class Trial(object):
                 # save images that were shown
                 imageStim.setImage(imagePath)
                 self.trial_info[f"image{i+1}"] = imagePath
+
+            for i, (videoStim, symbol) in enumerate(
+                zip(
+                    self.videoStims,
+                    (self.trial_info["symbol1"], self.trial_info["symbol2"]),
+                )
+            ):
+                videoPath = join(
+                    "stim",
+                    "images",
+                    str(self.exp_info["Stimulus-Set"]),
+                    "anim",
+                    self.exp_info["stimulus_map"][symbol].replace("png", "mp4"),
+                )
+                # save images that were shown
+                videoStim.setFilename(videoPath)
 
         else:  # Explicit phase: Set up text stimuli
             for explicitStim, probability, outcome in zip(
@@ -126,12 +143,15 @@ class Trial(object):
         if self.trial_info["option1pos"] == "left":
             self.imageStims[0].setPos((self.exp_info["pos_left"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_right"], 0))
+            self.videoStims[0].setPos((self.exp_info["pos_left"], 0))
+            self.videoStims[1].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_right"], 0))
-            self.outcomeStims[0]
         elif self.trial_info["option1pos"] == "right":
             self.imageStims[0].setPos((self.exp_info["pos_right"], 0))
             self.imageStims[1].setPos((self.exp_info["pos_left"], 0))
+            self.videoStims[0].setPos((self.exp_info["pos_right"], 0))
+            self.videoStims[1].setPos((self.exp_info["pos_left"], 0))
             self.outcomeStims[0].setPos((self.exp_info["pos_right"], 0))
             self.outcomeStims[1].setPos((self.exp_info["pos_left"], 0))
         else:
@@ -146,7 +166,7 @@ class Trial(object):
         )
 
     def run(self):
-
+        print("started run")
         # Stimulus phase
         for rect in self.bg_rects:
             rect.draw()
@@ -233,24 +253,24 @@ class Trial(object):
             else:
                 duration_choicephase = self.exp_info["duration_choice"]
 
+            for videoStim in self.videoStims:
+                videoStim.play()
+
             choicephase_timer = core.CountdownTimer(duration_choicephase)
             animation_phase = 0
             while choicephase_timer.getTime() > 0:
-                animation_phase += self.exp_info["animation_speed"]
-                # Opacity changes in cosine curve between 0 and 1, starting with 1
-                opacity = 1 + (math.cos(animation_phase) * 0.5)
                 # Draw background rectangles
                 for rect in self.bg_rects:
                     rect.draw()
 
-                ### Draw both images
+                ### Draw both videos
                 if self.trial_info["phase"] != "explicit":
-                    for image in self.imageStims:
-                        # adjust opacity
-                        image.setOpacity(opacity)
-                        # draw
-                        image.draw()
+                    for video in self.videoStims:
+                        video.draw()
                 else:
+                    # Explicit phase: Opacity changes in cosine curve between 0 and 1, starting with 1
+                    animation_phase += self.exp_info["animation_speed"]
+                    opacity = 1 + (math.cos(animation_phase) * 0.5)
                     for explicit in self.explicitStims:
                         # adjust opacity
                         explicit.setOpacity(opacity)
@@ -261,6 +281,8 @@ class Trial(object):
                 self.fb_rects[
                     response == "right"
                 ].draw()  # will draw left rect if response == "left" and right rect if response == "right"
+
+                ### Flip it
                 self.win.flip()
 
             ## Show outcome(s) if feedback != "skip"
@@ -289,9 +311,14 @@ class Trial(object):
                 self.win.flip()
                 core.wait(self.exp_info["duration_outcome"])
             else:  # feedback == "skip"
-                pass
+                self.win.flip()
         else:  # timed out
-            pass  # do nothing?
+            self.win.flip()
+
+        # Let's only stop and unload the video here, otherwise timing feels stuttery
+        for videoStim in self.videoStims:
+            videoStim.stop()
+            videoStim.unload()
 
         # compute reward
         if choice == 1:

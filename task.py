@@ -142,7 +142,7 @@ if __name__ == "__main__":
 
     # Screen
     fullscreen = True
-    screen_size = [1980, 1080]  # ignored, if fullscreen = True, I think
+    screen_size = [1280, 1080]  # ignored, if fullscreen = True, I think
     monitor = "testMonitor"  # name of the monitor configuration used (see PsychoPy monitor settings)
 
     # Logfile
@@ -439,6 +439,28 @@ if __name__ == "__main__":
     )
     images = [image_left, image_right]
 
+    ## Videos
+    ## Files are just placeholder, will be replaced in `trial.prepare()`
+    video_left = visual.MovieStim(
+        win,
+        filename="",  # join("stim", "images", str(exp_info["Stimulus-Set"]), "anim", "1.mp4"),
+        pos=(pos_left, 0),
+        size=(symbol_width, symbol_height),
+        loop=False,
+        autoStart=False,
+        units="height",
+    )
+    video_right = visual.MovieStim(
+        win,
+        filename="",  # join("stim", "images", str(exp_info["Stimulus-Set"]), "anim", "2.mp4"),
+        pos=(pos_right, 0),
+        size=(symbol_width, symbol_height),
+        loop=False,
+        autoStart=False,
+        units="height",
+    )
+    videos = [video_left, video_right]
+
     ## Set up background rectangles
     bg_rect_left = visual.Rect(
         win,
@@ -516,6 +538,7 @@ if __name__ == "__main__":
     # Save all pre-made visual elements
     visual_elements = dict(
         images=images,
+        videos=videos,
         bg_rects=bg_rects,
         outcomes=outcomes,
         explicit=explicit,
