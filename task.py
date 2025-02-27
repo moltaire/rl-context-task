@@ -18,6 +18,8 @@ Felix Molter
 2025-02-03
 felixmolter@gmail.com
 """
+import psychopy
+psychopy.useVersion("2024.1.0")
 
 from psychopy import visual, event, core, data, gui, sound
 from psychopy.tools.filetools import fromFile, toFile

@@ -1,6 +1,10 @@
+import psychopy
+psychopy.useVersion("2024.1.0")
+
+from psychopy import event, core
+
 import numpy as np
 from os.path import join
-from psychopy import event, core
 import math
 
 
