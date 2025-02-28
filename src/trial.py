@@ -188,8 +188,8 @@ class Trial(object):
         rt_start = self.win.flip()
 
         # Serial port trigger example
-        # if self.exp_info["serial_port"] is not None:
-        #     self.exp_info["serial_port"].send_trigger(f"trial_{self.trial_id}_stimuli-on")
+        # if self.exp_info["use_serialport"]:
+        #     self.exp_info["serialport"].send_trigger(f"trial_{self.trial_id}_stimuli-on")
 
         # Choice phase
         ## When a choice was made, show the feedback frame for `duration_choice`
