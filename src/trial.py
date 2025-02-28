@@ -1,7 +1,11 @@
+import psychopy
+
+psychopy.useVersion("2024.1.0")
+
+import math
 import numpy as np
 from os.path import join
 from psychopy import event, core
-import math
 
 
 class Trial(object):
@@ -253,8 +257,9 @@ class Trial(object):
             else:
                 duration_choicephase = self.exp_info["duration_choice"]
 
-            for videoStim in self.videoStims:
-                videoStim.play()
+            if not self.trial_info["phase"] == "explicit":
+                for videoStim in self.videoStims:
+                    videoStim.play()
 
             choicephase_timer = core.CountdownTimer(duration_choicephase)
             animation_phase = 0
@@ -264,7 +269,7 @@ class Trial(object):
                     rect.draw()
 
                 ### Draw both videos
-                if self.trial_info["phase"] != "explicit":
+                if not self.trial_info["phase"] == "explicit":
                     for video in self.videoStims:
                         video.draw()
                 else:
@@ -316,9 +321,10 @@ class Trial(object):
             self.win.flip()
 
         # Let's only stop and unload the video here, otherwise timing feels stuttery
-        for videoStim in self.videoStims:
-            videoStim.stop()
-            videoStim.unload()
+        if not self.trial_info["phase"] == "explicit":
+            for videoStim in self.videoStims:
+                videoStim.stop()
+                videoStim.unload()
 
         # compute reward
         if choice == 1:
