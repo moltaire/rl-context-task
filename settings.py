@@ -63,10 +63,6 @@ duration_first_trial_blank = 1  # a blank screen after instructions, before the 
 ## constant trial duration and stimulus events decoupled from response times.
 ## Note, that this cannot work with `duration_timeout` set to infinity.
 duration_fixed_response = False  # [True, False]
-if duration_fixed_response:
-    assert duration_timeout != float(
-        "inf"
-    ), "If using `duration_fixed_response`, you must use a finite `duration_timeout`."
 
 # Visual stim settings
 ## General background and text

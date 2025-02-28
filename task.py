@@ -45,6 +45,12 @@ if __name__ == "__main__":
     ## Load conditions file
     conditions = pd.read_csv(os.path.join("stim", conditions_file))
 
+    # Check if duration settings are possible
+    if duration_fixed_response:
+        assert duration_timeout != float(
+            "inf"
+        ), "If using `duration_fixed_response`, you must use a finite `duration_timeout`."
+
     ## Create folder if it does not exist
     if not os.path.exists(logfile_folder):
         os.makedirs(logfile_folder)
