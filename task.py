@@ -39,6 +39,11 @@ __version__ = 0.1  # because I pretend to know how to make software
 
 if __name__ == "__main__":
 
+    ########################
+    # ===== Settings ===== #
+    ########################
+    # Adapt to your preference in the settings.py file
+
     # Load settings from external settings.py file
     from settings import *
 
@@ -74,8 +79,6 @@ if __name__ == "__main__":
     ##############################
     # This configures the little
     # dialogue box to enter infos.
-    # You should not be required
-    # to make changes here.
 
     # Try to read experiment settings from a previous run
     try:
@@ -127,7 +130,7 @@ if __name__ == "__main__":
     ############################
     # ===== Instructions ===== #
     ############################
-    # Adapt to your preference!
+    # Adapt to your preference in the instructions.py file
 
     import instructions
 
