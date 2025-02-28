@@ -129,102 +129,15 @@ if __name__ == "__main__":
     ############################
     # Adapt to your preference!
 
-    ## Training phase
-    n_slides = 3
-    instr_slides_training = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Training Phase\n"
-                + f"Slide {i + 1}/{n_slides} text.\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
+    import instructions
 
-    ## Learning phase
-    ### Using image slides for illustration here
-    instr_slides_learning = [
-        ImageSlide(
-            win=win,
-            image=join(
-                "instructions",
-                "learning-phase",
-                f"rl-context-task_instructions_learning-phase.{i:03d}.png",
-            ),
-        )
-        for i in [1, 2, 3]
-    ]
-
-    ## Transfer phase
-    n_slides = 3
-    instr_slides_transfer = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Transfer Phase\n"
-                + f"Slide {i + 1}/{n_slides} text. No more feedback!\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ## Explicit phase
-    n_slides = 3
-    instr_slides_explicit = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Instructions: Explicit Phase\n"
-                + f"Slide {i + 1}/{n_slides} text. No more symbols, but numbers!\n\n"
-                + f"({button_instr_previous.capitalize()}) Previous - "
-                + f"({button_instr_next.capitalize()}) Next - "
-                + f"({button_instr_skip.capitalize()}) Skip"
-                + (
-                    f" - ({button_instr_finish.capitalize()}) Continue with task"
-                    if i == (n_slides - 1)
-                    else ""
-                )
-            ),
-            height=text_height,
-            color=text_color,
-        )
-        for i in range(n_slides)
-    ]
-
-    ## Debriefing
-    debriefing_slides = [
-        TextSlide(
-            win=win,
-            text=(
-                f"Debriefing\n\n"
-                + f"Ciao Kakao!\n"
-                + f"Mit '{button_instr_finish.capitalize()}' beenden Sie das Experiment."
-            ),
-            height=text_height,
-            color=text_color,
-        )
-    ]
+    (
+        instr_slides_training,
+        instr_slides_learning,
+        instr_slides_transfer,
+        instr_slides_explicit,
+        debriefing_slides,
+    ) = instructions.make_instructions(win)
 
     #########################################################################################################
     ## FROM THIS POINT ON, THERE BE DRAGONS. ONLY GO THERE IF YOU KNOW WHAT YOU'RE DOING AND HAVE A BACKUP ##
