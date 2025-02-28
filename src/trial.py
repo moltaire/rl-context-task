@@ -74,6 +74,8 @@ class Trial(object):
                 explicitStim.setText(
                     f"{(float(probability) * 100):.0f}%\n\n{float(outcome):.0f} Pkt."
                 )
+                explicitStim.setOpacity(1)  # reset opacity which we might have animated for feedback
+
                 # log that no images were shown
                 self.trial_info["image1"] = np.nan
                 self.trial_info["image2"] = np.nan
