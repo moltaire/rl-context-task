@@ -38,10 +38,11 @@ The conditions-file should have the following columns:
 
 ### Addtional Task Settings
 
-Additional task settings (e.g., timing variables, colors, etc.) can be set in `task.py` in the "Experiment Settings" section.
+Additional task settings (e.g., timing variables, colors, etc.) can be set in the `settings.py` file. You should not be required to make changes to `task.py`.
 
 ### Instructions
 
+Task instructions for the different phases can be defined in `instructions.py`.  
 Instructions are implemented as `src.slideshow.SlideShow`, allowing forward and backward navigation. Instruction content can be provided as plain text slides (using `src.slideshow.TextSlide`) or image slides (`src.slideshow.ImageSlide`), or a mix of the two.
 
 ### Output
