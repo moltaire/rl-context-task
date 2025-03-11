@@ -110,7 +110,7 @@ logfile_folder = "data"  # folder where to save logfiles
 use_eyetracker = True
 if use_eyetracker:
     ### Titta settings
-    eyetracker_dummy_mode = True
+    eyetracker_dummy_mode = False
     eyetracker_bimonocular_calibration = False
     eyetracker_name = 'Tobii Pro Spectrum'
     eyetracker_n_calibration_targets = 5
