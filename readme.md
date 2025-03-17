@@ -60,7 +60,6 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 
 ## Todo
 
-- [ ] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
 - [ ] Include serial port triggers
 - [ ] Allow for counterbalancing of trial_type / block-orders and/or disabling random shuffling
 - [ ] Perform thorough check of the task. Is everything on time? Is everything shown properly? Is everything recorded? Does the random stimulus mapping work as expected?
@@ -68,6 +67,7 @@ Stimulus images are made with the [Identicon generator](http://identicon.net/).
 - [ ] Write script to create `conditions.csv` mirroring literature
 - [ ] (low priority) What if we want to skip phases? problems: RNG, points counting.
 - [ ] (low priority) Check if we can read the settings.json for a rerun
+- [x] Integrate Tobii Eyetracker using [Titta](https://github.com/marcus-nystrom/Titta)
 - [x] ~~Clarify: Is feedback ("?") shown if no response given? -> No~~
 - [x] ~~(Bug): Explicit phase trials with "pseudorandom" mode do not make any sense, because probabilities are shown, but not used. Shown outcomes are always realized.~~
 - [x] ~~Implement actual stochastic outcomes that use `probability` columns of the conditions file~~
