@@ -112,8 +112,8 @@ if use_eyetracker:
     ### Titta settings
     eyetracker_dummy_mode = False
     eyetracker_bimonocular_calibration = False
-    eyetracker_name = 'Tobii Pro Spectrum'
-    eyetracker_n_calibration_targets = 5
+    eyetracker_name = 'Tobii X3-120 EPU'
+    eyetracker_n_calibration_targets = 9
     eyetracker_debug = False
     VIEWING_DIST = 63  # distance from eye to center of screen (cm)
     SCREEN_WIDTH = 52.7  # cm
