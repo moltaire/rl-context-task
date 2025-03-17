@@ -75,7 +75,9 @@ class Trial(object):
                 explicitStim.setText(
                     f"{(float(probability) * 100):.0f}%\n\n{float(outcome):.0f} Pkt."
                 )
-                explicitStim.setOpacity(1)  # reset opacity which we might have animated for feedback
+                explicitStim.setOpacity(
+                    1
+                )  # reset opacity which we might have animated for feedback
 
                 # log that no images were shown
                 self.trial_info["image1"] = np.nan
@@ -173,7 +175,6 @@ class Trial(object):
         )
 
     def run(self):
-        print("started run")
         # Stimulus phase
         for rect in self.bg_rects:
             rect.draw()
@@ -186,6 +187,12 @@ class Trial(object):
 
         ## Show stimuli and wait for response
         rt_start = self.win.flip()
+
+        ### Eyetracker message: Stimulus on
+        if self.exp_info["use_eyetracker"]:
+            self.exp_info["eyetracker"].send_message(
+                f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} stimulus on"
+            )
 
         # Serial port trigger example
         # if self.exp_info["use_serialport"]:
@@ -208,6 +215,13 @@ class Trial(object):
         ## Decode response
         if keyEvents is not None:
             # participant pressed a button
+
+            ### Eyetracker message
+            if self.exp_info["use_eyetracker"]:
+                self.exp_info["eyetracker"].send_message(
+                    f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} responded"
+                )
+
             if keyEvents[0][0] in [self.exp_info["buttons"]["button_quit"]]:
                 print("User quit experiment.")
                 core.quit()
@@ -243,6 +257,13 @@ class Trial(object):
                 )
         else:
             # no button was pressed
+
+            ## Eye tracker message: timed out
+            if self.exp_info["use_eyetracker"]:
+                self.exp_info["eyetracker"].send_message(
+                    f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} timed out"
+                )
+
             timed_out = True
             key_pressed, rt = (np.nan, np.nan)
             response = np.nan
@@ -266,6 +287,13 @@ class Trial(object):
 
             choicephase_timer = core.CountdownTimer(duration_choicephase)
             animation_phase = 0
+
+            ### Eyetracker message: Choice on
+            if self.exp_info["use_eyetracker"]:
+                self.exp_info["eyetracker"].send_message(
+                    f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} choice on"
+                )
+
             while choicephase_timer.getTime() > 0:
                 # Draw background rectangles
                 for rect in self.bg_rects:
@@ -293,6 +321,12 @@ class Trial(object):
                 ### Flip it
                 self.win.flip()
 
+            ### Eyetracker message: Choice off
+            if self.exp_info["use_eyetracker"]:
+                self.exp_info["eyetracker"].send_message(
+                    f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} choice off"
+                )
+
             ## Show outcome(s) if feedback != "skip"
             if not self.trial_info["feedback"] == "skip":
                 # draw background rectangles
@@ -317,6 +351,13 @@ class Trial(object):
 
                 # Show everything
                 self.win.flip()
+
+                ### Eyetracker message: Outcome on
+                if self.exp_info["use_eyetracker"]:
+                    self.exp_info["eyetracker"].send_message(
+                        f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} outcome on"
+                    )
+
                 core.wait(self.exp_info["duration_outcome"])
             else:  # feedback == "skip"
                 self.win.flip()
@@ -345,6 +386,13 @@ class Trial(object):
         ## Trial-specific ITI (in case of `duration_iti_jitter != 0`)
         ## is computed in self.prepare()
         self.win.flip()
+
+        ### Eyetracker message: Outcome off
+        if self.exp_info["use_eyetracker"]:
+            self.exp_info["eyetracker"].send_message(
+                f"{self.trial_info['trial_type']} {self.trial_info['trial_id']} outcome off"
+            )
+
         core.wait(self.iti)
 
     def log(self):

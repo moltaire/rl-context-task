@@ -6,9 +6,7 @@
 # described in comments.
 
 ## Experiment
-experiment_name = (
-    "Reinforcement-Learning Task"  # Name of the experiment shown in menus
-)
+experiment_name = "Reinforcement-Learning Task"  # Name of the experiment shown in menus
 experiment_label = "rl-context-task"  # Label of the experiment, used in logfiles
 
 # General experiment flow and settings
@@ -52,7 +50,9 @@ duration_choice = 0.5  # time for choice to be indicated (black border around ch
 duration_outcome = 1.0  # time for the outcome to be shown (seconds)
 duration_iti = 0.2  # inter trial interval (seconds)
 duration_iti_jitter = 0  # random jitter around `duration_iti`. ITIs will be distributed normally between duration_iti ± iti_jitter / 2
-duration_first_trial_blank = 1  # a blank screen after instructions, before the first trial of each block phase
+duration_first_trial_blank = (
+    1  # a blank screen after instructions, before the first trial of each block phase
+)
 
 ## This next setting can be used to fix the total time used for the two phases
 ## - `response` (participant deliberates) and
@@ -81,9 +81,7 @@ symbol_height = 0.24
 ## Outcome text
 outcome_color = "forestgreen"
 outcome_color_counterfactual = "gray"
-outcome_text_scale = (
-    2  # how much bigger should the outcomes be than the other text?
-)
+outcome_text_scale = 2  # how much bigger should the outcomes be than the other text?
 
 ## Background rectangle
 rect_linewidth = 3  # I think this is pixels?
@@ -108,5 +106,17 @@ monitor = "testMonitor"  # name of the monitor configuration used (see PsychoPy 
 logfile_folder = "data"  # folder where to save logfiles
 
 # External Hardware
-use_eyetracker = False
+## Tobii eye-tracker via titta
+use_eyetracker = True
+if use_eyetracker:
+    ### Titta settings
+    eyetracker_dummy_mode = False
+    eyetracker_bimonocular_calibration = False
+    eyetracker_name = 'Tobii Pro Spectrum'
+    eyetracker_n_calibration_targets = 5
+    eyetracker_debug = False
+    VIEWING_DIST = 63  # distance from eye to center of screen (cm)
+    SCREEN_WIDTH = 52.7  # cm
+    
+## Serial port
 use_serialport = False

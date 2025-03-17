@@ -22,7 +22,7 @@ import psychopy
 
 psychopy.useVersion("2024.1.0")
 
-from psychopy import visual, event, core, data, gui, sound
+from psychopy import visual, event, core, data, gui, monitors
 from psychopy.tools.filetools import fromFile, toFile
 from string import ascii_uppercase
 
@@ -60,20 +60,6 @@ if __name__ == "__main__":
     if not os.path.exists(logfile_folder):
         os.makedirs(logfile_folder)
 
-    # PLACEHOLDER FOR SERIAL PORT SETUP # # # # # #
-    if use_serialport:
-        # TODO: Include this. # # # # # # # # # # # # #
-        serialport = None
-    else:
-        serialport = None
-
-    # PLACEHOLDER FOR EYE-TRACKER SETUP # # # # # #
-    if use_eyetracker:
-        # TODO: Include this. # # # # # # # # # # # # #
-        eyetracker = None
-    else:
-        eyetracker = None
-
     ##############################
     # ===== Experiment GUI ===== #
     ##############################
@@ -110,6 +96,43 @@ if __name__ == "__main__":
         toFile("lastRunSettings.pickle", exp_info)
     else:
         core.quit()
+
+    # ---
+    # External hardware setup
+    # ---
+    # PLACEHOLDER FOR SERIAL PORT SETUP # # # # # #
+    if use_serialport:
+        # TODO: Include this. # # # # # # # # # # # # #
+        serialport = None
+    else:
+        serialport = None
+
+    # PLACEHOLDER FOR EYE-TRACKER SETUP # # # # # #
+    if use_eyetracker:
+        from titta import Titta
+
+        # Monitor setup
+        mon = monitors.Monitor(monitor)
+        mon.setWidth(SCREEN_WIDTH)  # Width of screen (cm)
+        mon.setDistance(VIEWING_DIST)  # Distance eye / monitor (cm)
+
+        # Get default settings for a supported eye tracker
+        settings = Titta.get_defaults(eyetracker_name)
+        settings.FILENAME = os.path.join(
+            logfile_folder,
+            f"task-{experiment_label}_subject-{exp_info['Subject']}_date-{exp_info['Date']}_time-{exp_info['Time']}_eyetracking",
+        )
+        settings.N_CAL_TARGETS = eyetracker_n_calibration_targets
+        settings.DEBUG = eyetracker_debug
+
+        # %% Connect to eye tracker and calibrate
+        eyetracker = Titta.Connect(settings)
+        if eyetracker_dummy_mode:
+            eyetracker.set_dummy_mode()
+        eyetracker.init()
+        eyetracker.send_message("experiment begin")
+    else:
+        eyetracker = None
 
     ############################
     # ===== Window setup ===== #
@@ -381,7 +404,15 @@ if __name__ == "__main__":
     ## Start experiment ##
     ######################
 
-    def run_phase(phase, conditions, instruction_slides, exp_info, exp, win):
+    def run_phase(
+        phase,
+        conditions,
+        instruction_slides,
+        exp_info,
+        exp,
+        win,
+        calibrate_eyetracker=False,
+    ):
         """
         This function runs a single phase of the task.
 
@@ -402,7 +433,10 @@ if __name__ == "__main__":
 
         # Only proceed if there are conditions to do
         if len(conditions_phase) > 0:
-            print(f"Running {len(conditions_phase)} trials of '{phase}' phase.")
+            run_phase_message = f"{phase} begin ({len(conditions_phase)} trials)"
+            print(run_phase_message)
+            if exp_info["use_eyetracker"]:
+                exp_info["eyetracker"].send_message(run_phase_message)
 
             ## Run instruction slideshow
             instruction = SlideShow(
@@ -414,7 +448,37 @@ if __name__ == "__main__":
                 keys_quit=[exp_info["buttons"]["button_quit"]],
                 keys_skip=[exp_info["buttons"]["button_instr_skip"]],
             )
+            if exp_info["use_eyetracker"]:
+                exp_info["eyetracker"].send_message(f"{phase} instructions on")
             response = instruction.run()
+
+            ## Eye tracking
+            if exp_info["use_eyetracker"]:
+                ### Calibration
+                if calibrate_eyetracker:
+                    eyetracker.send_message(f"{phase} calibration on")
+                    if eyetracker_bimonocular_calibration:
+                        exp_info["eyetracker"].calibrate(
+                            win, eye="left", calibration_number="first"
+                        )
+                        exp_info["eyetracker"].calibrate(
+                            win, eye="right", calibration_number="second"
+                        )
+                    else:
+                        exp_info["eyetracker"].calibrate(win)
+                    eyetracker.send_message(f"{phase} calibration off")
+
+                ### Start recording
+                exp_info["eyetracker"].start_recording(
+                    gaze=True,
+                    time_sync=True,
+                    eye_image=False,
+                    notifications=True,
+                    external_signal=True,
+                    positioning=True,
+                )
+                core.wait(0.5)
+
             # Blank screen after instructions
             win.flip()
             core.wait(exp_info["duration_first_trial_blank"])
@@ -423,6 +487,8 @@ if __name__ == "__main__":
             blocks = conditions_phase["block"].unique()
             n_blocks = len(blocks)
             for b, block in enumerate(blocks):
+                if exp_info["use_eyetracker"]:
+                    exp_info["eyetracker"].send_message(f"{phase} block {block} on")
                 if exp_info["show_block_dividers"]:
                     # Show a block divider if there are multiple blocks
                     if n_blocks > 1:
@@ -478,6 +544,18 @@ if __name__ == "__main__":
                     trial.prepare()
                     trial.run()
                     trial.log()
+
+        # Stop eye tracker recording
+        if exp_info["use_eyetracker"]:
+            eyetracker.send_message(f"{phase} end")
+            exp_info["eyetracker"].stop_recording(
+                gaze=True,
+                time_sync=True,
+                eye_image=False,
+                notifications=True,
+                external_signal=True,
+                positioning=True,
+            )
 
         # (optional) show score after phase (not after training, though)
         if phase != "training":
@@ -557,6 +635,7 @@ if __name__ == "__main__":
     # -------------- #
     # Learning phase #
     # -------------- #
+
     run_phase(
         phase="learning",
         conditions=conditions,
@@ -564,11 +643,13 @@ if __name__ == "__main__":
         exp_info=exp_info,
         exp=exp,
         win=win,
+        calibrate_eyetracker=True,
     )
 
     # -------------- #
     # Transfer phase #
     # -------------- #
+
     run_phase(
         phase="transfer",
         conditions=conditions,
@@ -576,11 +657,13 @@ if __name__ == "__main__":
         exp_info=exp_info,
         exp=exp,
         win=win,
+        calibrate_eyetracker=True,
     )
 
     # -------------- #
     # Explicit phase #
     # -------------- #
+
     run_phase(
         phase="explicit",
         conditions=conditions,
@@ -593,6 +676,7 @@ if __name__ == "__main__":
     # ------------------------------ #
     # End of experiment / Debriefing #
     # ------------------------------ #
+
     SlideShow(
         win=win,
         slides=debriefing_slides,
@@ -610,4 +694,18 @@ if __name__ == "__main__":
     print(len(total_score_string) * "$")
 
     # Finish the experiment
+    if use_eyetracker:
+        eyetracker.send_message("experiment end")
+        eyetracker.stop_recording(
+            gaze=True,
+            time_sync=True,
+            eye_image=False,
+            notifications=True,
+            external_signal=True,
+            positioning=True,
+        )
+        eyetracker.save_data()
+
+    # Close window and save data
+    win.close()
     core.quit()
